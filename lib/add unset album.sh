@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Comment:
+# Adiciona o valor da tag ALBUM caso ela
+# não exista, requerimento: valor da tag
+# TITLE
 
 echo "- AUDIOEXIF SWISS-KNIFE - ADD UNSET ALBUM NAME METADATA BASED ON TITLE -------------------------"
 CHANGED=0

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Comment:
+# Trim disproporcional artwork's/coverart's ratio
+# to 1:1, which is the standart.
 
 echo "- AUDIOEXIF SWISS-KNIFE - TRIM TRACK ARTWORK/COVERART TO MATCH 1:1 RATIO  -------------------------"
 CURRENT_DIR="$PWD"

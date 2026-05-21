@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Comment:
+# Adiciona o valor da tag ALBUM caso ela
+# não exista, requerimento: valor da tag
+# TITLE
 
 echo '- AUDIOEXIF SWISS-KNIFE - MULTIPLE ARTISTS  -------------------------'
 for TRACK in "${TRACKS[@]}"; do

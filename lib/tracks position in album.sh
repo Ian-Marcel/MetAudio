@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
+# Comment:
+# Make a single ARTIST that contains more than one
+# artist in a multiple ARTISTS for the 'coadjuvants artists',
+# intended for Navidrome use.
 
-echo "- AUDIOEXIF SWISS-KNIFE - tracks position in album -------------------------"
+echo "- AUDIOEXIF SWISS-KNIFE - TRACKS POSITION IN ALBUM -------------------------"
 MESSAGE_OCURRANCE=0
 for TRACK in "${TRACKS[@]}"; do
     FILE="${TRACK##*/}"                               # Name of the file containing the track.
