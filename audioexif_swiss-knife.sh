@@ -20,7 +20,7 @@ echo "AUDIOEXIF SWISS-KNIFE"
 # artist in a multiple ARTISTS for the 'coadjuvants artists',
 # intended for Navidrome use.
 source "./lib/multiple artists.sh"
-exit # <-- !!! ATENTION !!!
+# exit # <-- !!! ATENTION !!!
 
 # Comment:
 # Read the Track number exif data from the audio file

@@ -7,12 +7,12 @@
 echo "- AUDIOEXIF SWISS-KNIFE - TRACKS POSITION IN ALBUM -------------------------"
 MESSAGE_OCURRANCE=0
 for TRACK in "${TRACKS[@]}"; do
-    FILE="${TRACK##*/}"                               # Name of the file containing the track.
-    EXT="${FILE##*.}"                                 # Type of file (extension).
-    EXT="${EXT,,}"                                    # Type of file (extension). Lowercased
-    [[ " $EXTENSIONS " == *" $EXT "* ]] || continue   # Pula se a extensão não está na lista.
-    TITLE=$(exiftool -s3 -Title "$TRACK" 2>/dev/null) #  [From metadata] Name of the track's Title.
-    ALBUM=$(exiftool -s3 -Album "$TRACK" 2>/dev/null) #  [From metadata] Name of the track's Album.
+    FILE="${TRACK##*/}"                                   # Name of the file containing the track.
+    EXTENSION="${FILE##*.}"                               # Type of file (extension).
+    EXTENSION="${EXTENSION,,}"                            # Type of file (extension). Lowercased
+    [[ " $EXTENSIONS " == *" $EXTENSION "* ]] || continue # Pula se a extensão não está na lista.
+    TITLE=$(exiftool -s3 -Title "$TRACK" 2>/dev/null)     #  [From metadata] Name of the track's Title.
+    ALBUM=$(exiftool -s3 -Album "$TRACK" 2>/dev/null)     #  [From metadata] Name of the track's Album.
     ALBUM_FOLDER="${ALBUM/$UNSAFE_FILE_CHARS_KILLER/_}"
     TRACK_NUMBER=$(exiftool -s3 -Tracknumber "$TRACK")
     if [ $MESSAGE_OCURRANCE == 0 ]; then
