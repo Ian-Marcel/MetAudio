@@ -12,6 +12,7 @@ for EXTENSION in $EXTENSIONS; do
     mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
 done
 echo "AUDIOEXIF SWISS-KNIFE"
+# --- Code below -----
 source "./lib/multiple artists.sh"
 # Comment:
 # Make a single ARTIST that contains more than one
