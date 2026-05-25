@@ -36,8 +36,10 @@ while [ -n "${ARGS_DIGESTER[$ARGD_INDEX]}" ]; do
         ;;
     -d | --destination)
         ((ARGD_INDEX++))
+        POST_DEST_DIGEST_INDEX=$ARGD_INDEX # LATER: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
         if [ -d "${ARGS_DIGESTER[$ARGD_INDEX]}" ]; then
             DESTINATION_PATH="${ARGS_DIGESTER[$ARGD_INDEX]}"
+            DESTINATION_TRANSPORT_METHOD=${DESTINATION_TRANSPORT_METHOD:-'move'}
         else
             case "${ARGS_DIGESTER[$ARGD_INDEX]}" in
             -c | --copy)
@@ -52,7 +54,6 @@ while [ -n "${ARGS_DIGESTER[$ARGD_INDEX]}" ]; do
             esac
             exit
         fi
-        DESTINATION_TRANSPORT_METHOD=${DESTINATION_TRANSPORT_METHOD:-'move'}
         ;;
     -m | --move) # Default destination transport method, is a meta-argument, only purpose is for clarification in scripts.
         DESTINATION_TRANSPORT_METHOD='move'
