@@ -23,22 +23,23 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
     ARG=${ARGS_DIGESTER[$INDEX]}
     case "$ARG" in
     -s=* | --structure-operation=*)
-        if [ "${OPS_ARRAY:-}" ]; then
-            echo "ERROR: tracks operation was declared first! Tracks and structure operations cannot run together."
+        if [ "${TRACKS_OPS:-}" ]; then
+            echo "ERROR: tracks operation was declared! Tracks and structure operations cannot run together."
             exit 1
         fi
-        IFS=',' read -ra OPS_ARRAY <<<"$(echo "$ARG" | sed 's/^[^=]*=//')"
+        IFS=',' read -ra STRUCTURE_OPS <<<"$(echo "${ARGS_DIGESTER[$ARGD_INDEX]}" | sed 's/^[^=]*=//')"
         ;;
     -t=* | --tracks-operation=*)
-        if [ "${OPS_ARRAY:-}" ]; then
-            echo "ERROR: structure operation was declared first! Tracks and structure operations cannot run together."
+        if [ "${STRUCTURE_OPS:-}" ]; then
+            echo "ERROR: structure operation was declared! Tracks and structure operations cannot run together."
             exit 1
         fi
-        IFS=',' read -ra OPS_ARRAY <<<"$(echo "$ARG" | sed 's/^[^=]*=//')"
+        IFS=',' read -ra TRACKS_OPS <<<"$(echo "${ARGS_DIGESTER[$ARGD_INDEX]}" | sed 's/^[^=]*=//')"
         ;;
     -d | --destination)
         ((INDEX++))
         POST_DEST_DIGEST_INDEX=$INDEX # LATER: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
+        ARG=${ARGS_DIGESTER[$INDEX]}
         if [ -d "$ARG" ]; then
             DESTINATION_PATH="$ARG"
             DESTINATION_TRANSPORT_METHOD=${DESTINATION_TRANSPORT_METHOD:-'move'}
@@ -78,7 +79,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
     esac
     ((INDEX++))
 done
-if ! [ "${OPS_ARRAY:-}" ]; then
+if ! [ "${STRUCTURE_OPS:-}" -o "${TRACKS_OPS:-}" ]; then
     echo "No operation declared!"
     exit
 fi
@@ -112,3 +113,40 @@ if [ "$NO_PROMPTS" == 'false' ]; then
 fi
 
 # OPTS
+TARGET=${ORIGIN:-.}
+if ! [ -d "$TARGET" ]; then
+    echo "[ERROR]: '$TARGET' is not a folder/directory."
+    exit 1
+fi
+UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.
+EXTENSIONS="mp3 flac m4a ogg opus wma"
+TRACKS=()
+for EXTENSION in $EXTENSIONS; do
+    mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
+done
+echo "AUDIOXIF SWISS-KNIFE"
+
+if [ "${STRUCTURE_OPS:-}" ]; then
+    echo st
+elif [ "${TRACKS_OPS:-}" ]; then
+    echo tr
+fi
+# --- Code below -----
+source "./lib/multiple artists.sh"
+# Comment:
+# Make a single ARTIST that contains more than one
+# artist in a multiple ARTISTS for the 'coadjuvants artists',
+# intended for Navidrome use.
+source "./lib/tracks position in album.sh"
+# Comment:
+# Read the Track number exif data from the audio file
+# and adds it to start of the a audio file's name.
+source "./lib/add unset album.sh"
+# Comment:
+# Adiciona o valor da tag ALBUM caso ela
+# não exista, requerimento: valor da tag
+# TITLE
+source "./lib/trim track artwork.sh"
+# Comment:
+# Trim disproporcional artwork's/coverart's ratio
+# to 1:1, which is the standart.
