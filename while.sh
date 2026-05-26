@@ -14,34 +14,36 @@
 ##  opt2,\
 ##  opt3
 
+NO_PROMPTS='false'
 ORIGIN='.'
+INDEX=0
 ARGS=$(echo $@ | tr -s ' ')
 read -ra ARGS_DIGESTER <<<"$ARGS"
-ARGD_INDEX=0
-while [ -n "${ARGS_DIGESTER[$ARGD_INDEX]}" ]; do
-    case "${ARGS_DIGESTER[$ARGD_INDEX]}" in
+while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
+    ARG=${ARGS_DIGESTER[$INDEX]}
+    case "$ARG" in
     -s=* | --structure-operation=*)
-        if [ "${TRACKS_OPS:-}" ]; then
-            echo "ERROR: tracks operation was declared! Tracks and structure operations cannot run together."
+        if [ "${OPS_ARRAY:-}" ]; then
+            echo "ERROR: tracks operation was declared first! Tracks and structure operations cannot run together."
             exit 1
         fi
-        IFS=',' read -ra STRUCTURE_OPS <<<"$(echo "${ARGS_DIGESTER[$ARGD_INDEX]}" | sed 's/^[^=]*=//')"
+        IFS=',' read -ra OPS_ARRAY <<<"$(echo "$ARG" | sed 's/^[^=]*=//')"
         ;;
     -t=* | --tracks-operation=*)
-        if [ "${STRUCTURE_OPS:-}" ]; then
-            echo "ERROR: structure operation was declared! Tracks and structure operations cannot run together."
+        if [ "${OPS_ARRAY:-}" ]; then
+            echo "ERROR: structure operation was declared first! Tracks and structure operations cannot run together."
             exit 1
         fi
-        IFS=',' read -ra TRACKS_OPS <<<"$(echo "${ARGS_DIGESTER[$ARGD_INDEX]}" | sed 's/^[^=]*=//')"
+        IFS=',' read -ra OPS_ARRAY <<<"$(echo "$ARG" | sed 's/^[^=]*=//')"
         ;;
     -d | --destination)
-        ((ARGD_INDEX++))
-        POST_DEST_DIGEST_INDEX=$ARGD_INDEX # LATER: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
-        if [ -d "${ARGS_DIGESTER[$ARGD_INDEX]}" ]; then
-            DESTINATION_PATH="${ARGS_DIGESTER[$ARGD_INDEX]}"
+        ((INDEX++))
+        POST_DEST_DIGEST_INDEX=$INDEX # LATER: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
+        if [ -d "$ARG" ]; then
+            DESTINATION_PATH="$ARG"
             DESTINATION_TRANSPORT_METHOD=${DESTINATION_TRANSPORT_METHOD:-'move'}
         else
-            case "${ARGS_DIGESTER[$ARGD_INDEX]}" in
+            case "$ARG" in
             -c | --copy)
                 echo "ERROR: -c/--copy argument must be declared before -d/--destination or after -d/--destination path!"
                 ;;
@@ -61,9 +63,12 @@ while [ -n "${ARGS_DIGESTER[$ARGD_INDEX]}" ]; do
     -c | --copy)
         DESTINATION_TRANSPORT_METHOD='copy'
         ;;
+    -y | --assume-yes)
+        NO_PROMPTS='true'
+        ;;
     *)
-        if [ -d "${ARGS_DIGESTER[$ARGD_INDEX]}" -a "$ORIGIN" = '.' ]; then
-            ORIGIN="${ARGS_DIGESTER[$ARGD_INDEX]}"
+        if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
+            ORIGIN="$ARG"
         else
             echo -e "ERROR: Additonal unrecognized argument was declared!
                 \rSee audioxif --help for guidance."
@@ -71,12 +76,13 @@ while [ -n "${ARGS_DIGESTER[$ARGD_INDEX]}" ]; do
         fi
         ;;
     esac
-    ((ARGD_INDEX++))
+    ((INDEX++))
 done
-if ! [ "${STRUCTURE_OPS:-}" -o "${TRACKS_OPS:-}" ]; then
+if ! [ "${OPS_ARRAY:-}" ]; then
     echo "No operation declared!"
     exit
 fi
+INDEX=0
 ORIGIN=$(realpath $ORIGIN)
 echo "ORIGIN is: $ORIGIN"
 if [ "${DESTINATION_PATH:-}" ]; then
@@ -84,3 +90,25 @@ if [ "${DESTINATION_PATH:-}" ]; then
     echo "DESTINATION is: $DESTINATION_PATH"
     echo "DESTINATION transport method is: $DESTINATION_TRANSPORT_METHOD"
 fi
+if [ "$NO_PROMPTS" == 'false' ]; then
+    while [[ true ]]; do
+        echo "Is info above correct? [Y/n]"
+        read -rp 'Answer: ' CORASWR
+        case "$CORASWR" in
+        [yY] | [yY]es)
+            echo Proceeding...
+            break
+            ;;
+        [nN] | [nN]o)
+            echo Exiting...
+            exit 0
+            ;;
+        *)
+            echo "Answer with y/yes or n/no."
+            ;;
+        esac
+
+    done
+fi
+
+# OPTS
