@@ -20,7 +20,6 @@ ORIGIN='.'
 INDEX=0
 UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.
 EXTENSIONS="mp3 flac m4a ogg opus wma"
-TRACKS=()
 ARGS=$(echo $@ | tr -s ' ')
 read -ra ARGS_DIGESTER <<<"$ARGS"
 while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
@@ -129,12 +128,13 @@ fi
 
 # OPTS
 TARGET=${ORIGIN:-.}
-for EXTENSION in $EXTENSIONS; do
-    mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
-done
 
 if [ "${STRUCTURE_OPS:-}" ]; then
     while [ -n "${STRUCTURE_OPS[$INDEX]}" ]; do
+        TRACKS=()
+        for EXTENSION in $EXTENSIONS; do
+            mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
+        done
         OPT=${STRUCTURE_OPS[$INDEX]}
         case "$OPT" in
         track_positioner)
@@ -143,6 +143,9 @@ if [ "${STRUCTURE_OPS:-}" ]; then
             # Read the Track number exif data from the audio file
             # and adds it to start of the a audio file's name.
             ;;
+        sort_album_type)
+            source "./lib/structure/albums_sort_by_track_count.sh"
+            ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
             exit 1
@@ -150,6 +153,10 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         esac
     done
 elif [ "${TRACKS_OPS:-}" ]; then
+    TRACKS=()
+    for EXTENSION in $EXTENSIONS; do
+        mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
+    done
     while [ -n "${TRACKS_OPS[$INDEX]}" ]; do
         OPT=${TRACKS_OPS[$INDEX]}
         case "$OPT" in
