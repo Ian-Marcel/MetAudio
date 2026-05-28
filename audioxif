@@ -138,7 +138,7 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         OPT=${STRUCTURE_OPS[$INDEX]}
         case "$OPT" in
         track_positioner)
-            source "./lib/structure/tracks position in album.sh "
+            source "./lib/structure/tracks_position_in_album.sh"
             # Comment:
             # Read the Track number exif data from the audio file
             # and adds it to start of the a audio file's name.
@@ -151,6 +151,7 @@ if [ "${STRUCTURE_OPS:-}" ]; then
             exit 1
             ;;
         esac
+        ((INDEX++))
     done
 elif [ "${TRACKS_OPS:-}" ]; then
     TRACKS=()
@@ -161,21 +162,21 @@ elif [ "${TRACKS_OPS:-}" ]; then
         OPT=${TRACKS_OPS[$INDEX]}
         case "$OPT" in
         multiple_artists)
-            source "./lib/tracks/multiple artists.sh"
+            source "./lib/tracks/multiple_artists.sh"
             # Comment:
             # Make a single ARTIST that contains more than one
             # artist in a multiple ARTISTS for the 'coadjuvants artists',
             # intended for Navidrome use.
             ;;
         set_album_name)
-            source "./lib/tracks/add unset album.sh"
+            source "./lib/tracks/add_unset_album.sh"
             # Comment:
             # Adiciona o valor da tag ALBUM caso ela
             # não exista, requerimento: valor da tag
             # TITLE
             ;;
         trim_artwork)
-            source "./lib/tracks/trim track artwork.sh"
+            source "./lib/tracks/trim_track_artwork.sh"
             # Comment:
             # Trim disproporcional artwork's/coverart's ratio
             # to 1:1, which is the standart.
@@ -185,6 +186,7 @@ elif [ "${TRACKS_OPS:-}" ]; then
             exit 1
             ;;
         esac
+        ((INDEX++))
     done
 fi
 if [ "${DESTINATION_PATH:-}" ]; then

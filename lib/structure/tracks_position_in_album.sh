@@ -4,7 +4,7 @@
 # artist in a multiple ARTISTS for the 'coadjuvants artists',
 # intended for Navidrome use.
 
-echo "- AUDIOEXIF SWISS-KNIFE - TRACKS POSITION IN ALBUM -------------------------"
+echo "- TRACKS POSITION IN ALBUM -------------------------"
 MESSAGE_OCURRANCE=0
 for TRACK in "${TRACKS[@]}"; do
     FILE="${TRACK##*/}"                                   # Name of the file containing the track.
@@ -23,7 +23,7 @@ for TRACK in "${TRACKS[@]}"; do
         continue
     fi
     if ! printf "$FILE" | grep --quiet -E "^0?$TRACK_NUMBER - "; then
-        mv "$TRACK" "$TARGET_DIR/$TRACK_NUMBER - $FILE"
+        mv "$TRACK" "$TARGET/$TRACK_NUMBER - $FILE"
         echo "[INFO]: $FILE RENAMED TO $TRACK_NUMBER - $FILE"
     else
         echo "[WARN]: TRACK IS ALREADY NUMBERED: $FILE"
