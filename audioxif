@@ -3,20 +3,24 @@
 # OPTIONS:
 #   --tracks-operation= | -t=opt1,opt2,... @required(conflicts with --structure-operation/-s)
 #   --structure-operation= | -s=opt1,opt2,... @required(conflicts with --tracks-operation/-t)
-#   --destination="directory" | -d="directory"  @optional
+#   --destination "directory" | -d "directory"  @optional
 # EXAMPLES:
 #   audioxif --tracks-operation=opt1,opt2 <origin_directory>
-#   audioxif <origin_directory> --structure-operation=opt1,opt2 --destination=<destination_directory>
-#   audioxif -d=<destination_directory> <origin_directory> -t=opt1,opt2
+#   audioxif <origin_directory> --structure-operation=opt1,opt2 --destination <destination_directory>
+#   audioxif -d <destination_directory> <origin_directory> -t=opt1,opt2
 #   audioxif <origin_directory> -s=opt1,opt2
 #   audioxif --tracks-operation=\
 ##  opt1,\
 ##  opt2,\
 ##  opt3
 
+echo "AUDIOXIF SWISS-KNIFE"
 NO_PROMPTS='false'
 ORIGIN='.'
 INDEX=0
+UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.
+EXTENSIONS="mp3 flac m4a ogg opus wma"
+TRACKS=()
 ARGS=$(echo $@ | tr -s ' ')
 read -ra ARGS_DIGESTER <<<"$ARGS"
 while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
@@ -71,8 +75,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
             ORIGIN="$ARG"
         else
-            echo -e "ERROR: Additonal unrecognized argument was declared!
-                \rSee audioxif --help for guidance."
+            echo -e "ERROR: Additonal unrecognized argument was declared! \nSee audioxif --help for guidance."
             exit 1
         fi
         ;;
@@ -83,14 +86,26 @@ if ! [ "${STRUCTURE_OPS:-}" -o "${TRACKS_OPS:-}" ]; then
     echo "No operation declared!"
     exit
 fi
-INDEX=0
 ORIGIN=$(realpath $ORIGIN)
-echo "ORIGIN is: $ORIGIN"
 if [ "${DESTINATION_PATH:-}" ]; then
     DESTINATION_PATH=$(realpath $DESTINATION_PATH)
     echo "DESTINATION is: $DESTINATION_PATH"
     echo "DESTINATION transport method is: $DESTINATION_TRANSPORT_METHOD"
+    case "$DESTINATION_TRANSPORT_METHOD" in
+    move)
+        dtmethod() {
+            mv $@
+        }
+        ;;
+    copy)
+        dtmethod() {
+            cp -ar $@
+        }
+        ;;
+    esac
 fi
+INDEX=0
+echo "ORIGIN is: $ORIGIN"
 if [ "$NO_PROMPTS" == 'false' ]; then
     while [[ true ]]; do
         echo "Is info above correct? [Y/n]"
@@ -114,39 +129,57 @@ fi
 
 # OPTS
 TARGET=${ORIGIN:-.}
-if ! [ -d "$TARGET" ]; then
-    echo "[ERROR]: '$TARGET' is not a folder/directory."
-    exit 1
-fi
-UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.
-EXTENSIONS="mp3 flac m4a ogg opus wma"
-TRACKS=()
 for EXTENSION in $EXTENSIONS; do
     mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
 done
-echo "AUDIOXIF SWISS-KNIFE"
 
 if [ "${STRUCTURE_OPS:-}" ]; then
-    echo st
+    while [ -n "${STRUCTURE_OPS[$INDEX]}" ]; do
+        OPT=${STRUCTURE_OPS[$INDEX]}
+        case "$OPT" in
+        track_positioner)
+            source "./lib/structure/tracks position in album.sh "
+            # Comment:
+            # Read the Track number exif data from the audio file
+            # and adds it to start of the a audio file's name.
+            ;;
+        *)
+            echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
+            exit 1
+            ;;
+        esac
+    done
 elif [ "${TRACKS_OPS:-}" ]; then
-    echo tr
+    while [ -n "${TRACKS_OPS[$INDEX]}" ]; do
+        OPT=${TRACKS_OPS[$INDEX]}
+        case "$OPT" in
+        multiple_artists)
+            source "./lib/tracks/multiple artists.sh"
+            # Comment:
+            # Make a single ARTIST that contains more than one
+            # artist in a multiple ARTISTS for the 'coadjuvants artists',
+            # intended for Navidrome use.
+            ;;
+        set_album_name)
+            source "./lib/tracks/add unset album.sh"
+            # Comment:
+            # Adiciona o valor da tag ALBUM caso ela
+            # não exista, requerimento: valor da tag
+            # TITLE
+            ;;
+        trim_artwork)
+            source "./lib/tracks/trim track artwork.sh"
+            # Comment:
+            # Trim disproporcional artwork's/coverart's ratio
+            # to 1:1, which is the standart.
+            ;;
+        *)
+            echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
+            exit 1
+            ;;
+        esac
+    done
 fi
-# --- Code below -----
-source "./lib/multiple artists.sh"
-# Comment:
-# Make a single ARTIST that contains more than one
-# artist in a multiple ARTISTS for the 'coadjuvants artists',
-# intended for Navidrome use.
-source "./lib/tracks position in album.sh"
-# Comment:
-# Read the Track number exif data from the audio file
-# and adds it to start of the a audio file's name.
-source "./lib/add unset album.sh"
-# Comment:
-# Adiciona o valor da tag ALBUM caso ela
-# não exista, requerimento: valor da tag
-# TITLE
-source "./lib/trim track artwork.sh"
-# Comment:
-# Trim disproporcional artwork's/coverart's ratio
-# to 1:1, which is the standart.
+if [ "${DESTINATION_PATH:-}" ]; then
+    dtmethod "$ORIGIN"/* "$DESTINATION_PATH"/
+fi
