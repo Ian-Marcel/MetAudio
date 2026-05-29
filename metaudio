@@ -98,8 +98,8 @@ if [ "${DESTINATION_PATH:-}" ]; then
     case "$DESTINATION_TRANSPORT_METHOD" in
     move)
         dtmethod() {
-            cp -ar "$1" "$2"
-            rm -rf "$1"
+            cp -ar "$1" "$2" &&
+                rm -rf "$1"
         }
         ;;
     copy)
