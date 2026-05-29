@@ -143,15 +143,9 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         case "$OPT" in
         track_positioner)
             source "./lib/structure/tracks_position_in_album.sh"
-            # Comment:
-            # Read the Track number exif data from the audio file
-            # and adds it to start of the a audio file's name.
             ;;
         sort_album_type)
             source "./lib/structure/albums_sort_by_track_count.sh"
-            # Comment:
-            # Add to the album's folder name it's type:
-            # (S)Single, (EP)Extended Play or (FL)Full Length
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
@@ -170,23 +164,12 @@ elif [ "${METADATA_OPS:-}" ]; then
         case "$OPT" in
         multiple_artists)
             source "./lib/tracks/multiple_artists.sh"
-            # Comment:
-            # Make a single ARTIST that contains more than one
-            # artist in a multiple ARTISTS for the 'coadjuvants artists',
-            # intended for Navidrome use.
             ;;
         set_album_name)
             source "./lib/tracks/add_unset_album.sh"
-            # Comment:
-            # Adiciona o valor da tag ALBUM caso ela
-            # não exista, requerimento: valor da tag
-            # TITLE
             ;;
         trim_artwork)
             source "./lib/tracks/trim_track_artwork.sh"
-            # Comment:
-            # Trim disproporcional artwork's/coverart's ratio
-            # to 1:1, which is the standart.
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."

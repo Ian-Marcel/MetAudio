@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Comment:
+# Add to the album's folder name it's type:
+# (S)Single, (EP)Extended Play or (FL)Full Length
 
 echo '- ALBUM TYPE CLASSIFIER -------------------------------------------------'
 # ── Deduplicate: collect unique parent folders ────────────────────────────────
