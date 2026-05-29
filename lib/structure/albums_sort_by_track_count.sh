@@ -13,7 +13,7 @@ for TRACK in "${TRACKS[@]}"; do
 done
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-CLASSIFIED_RE='^(Single|S|Extended Play|EP|Full Length|FL) - '
+CLASSIFIED_RE='^(S|Single|EP|Extended Play|FL|Full Length) - '
 
 change_folder_name() { # args: <current-path> <parent-path> <folder-name> <type>
     local TRACK_PATH=$1 PARENT=$2 FOLDER=$3 TYPE=$4

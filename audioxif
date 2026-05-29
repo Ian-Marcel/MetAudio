@@ -126,13 +126,13 @@ if [ "$NO_PROMPTS" == 'false' ]; then
 fi
 
 # OPTS
-TARGET="${ORIGIN:-.}"
+# TARGET="${ORIGIN:-.}"
 
 if [ "${STRUCTURE_OPS:-}" ]; then
     while [ -n "${STRUCTURE_OPS[$INDEX]}" ]; do
         TRACKS=()
         for EXTENSION in $EXTENSIONS; do
-            mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
+            mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$ORIGIN" -iname "*.$EXTENSION" | sort)
         done
         OPT="${STRUCTURE_OPS[$INDEX]}"
         case "$OPT" in
@@ -155,7 +155,7 @@ if [ "${STRUCTURE_OPS:-}" ]; then
 elif [ "${TRACKS_OPS:-}" ]; then
     TRACKS=()
     for EXTENSION in $EXTENSIONS; do
-        mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
+        mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$ORIGIN" -iname "*.$EXTENSION" | sort)
     done
     while [ -n "${TRACKS_OPS[$INDEX]}" ]; do
         OPT="${TRACKS_OPS[$INDEX]}"
@@ -188,6 +188,7 @@ elif [ "${TRACKS_OPS:-}" ]; then
         ((INDEX++))
     done
 fi
+
 if [ "${DESTINATION_PATH:-}" ]; then
     dtmethod "$ORIGIN"/* "$DESTINATION_PATH"/
 fi
