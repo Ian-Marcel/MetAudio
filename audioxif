@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 # OPTIONS:
-#   --tracks-operation= | -t=opt1,opt2,... @required(conflicts with --structure-operation/-s)
-#   --structure-operation= | -s=opt1,opt2,... @required(conflicts with --tracks-operation/-t)
+#   --metadata-operation= | -m=opt1,opt2,... @required(conflicts with --structure-operation/-s)
+#   --structure-operation= | -s=opt1,opt2,... @required(conflicts with --metadata-operation/-m)
 #   --destination "directory" | -d "directory"  @optional
 # EXAMPLES:
-#   audioxif --tracks-operation=opt1,opt2 <origin_directory>
+#   audioxif --metadata-operation=opt1,opt2 <origin_directory>
 #   audioxif <origin_directory> --structure-operation=opt1,opt2 --destination <destination_directory>
-#   audioxif -d <destination_directory> <origin_directory> -t=opt1,opt2
+#   audioxif -d <destination_directory> <origin_directory> -m=opt1,opt2
 #   audioxif <origin_directory> -s=opt1,opt2
-#   audioxif --tracks-operation=\
+#   audioxif --metadata-operation=\
 ##  opt1,\
 ##  opt2,\
 ##  opt3
@@ -25,18 +25,18 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
     ARG="${ARGS_DIGESTER[$INDEX]}"
     case "$ARG" in
     -s=* | --structure-operation=*)
-        if [ "${TRACKS_OPS:-}" ]; then
-            echo "ERROR: tracks operation was declared! Tracks and structure operations cannot run together."
+        if [ "${METADATA_OPS:-}" ]; then
+            echo "ERROR: metadata operation was declared! Tracks and structure operations cannot run together."
             exit 1
         fi
         IFS=',' read -ra STRUCTURE_OPS <<<"${ARG#*=}"
         ;;
-    -t=* | --tracks-operation=*)
+    -m=* | --metadata-operation=*)
         if [ "${STRUCTURE_OPS:-}" ]; then
             echo "ERROR: structure operation was declared! Tracks and structure operations cannot run together."
             exit 1
         fi
-        IFS=',' read -ra TRACKS_OPS <<<"${ARG#*=}"
+        IFS=',' read -ra METADATA_OPS <<<"${ARG#*=}"
         ;;
     -d | --destination)
         ((INDEX++))
@@ -80,7 +80,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
     esac
     ((INDEX++))
 done
-if ! [ "${STRUCTURE_OPS:-}" -o "${TRACKS_OPS:-}" ]; then
+if ! [ "${STRUCTURE_OPS:-}" -o "${METADATA_OPS:-}" ]; then
     echo "No operation declared!"
     exit
 fi
@@ -143,6 +143,8 @@ if [ "${STRUCTURE_OPS:-}" ]; then
             ;;
         sort_album_type)
             source "./lib/structure/albums_sort_by_track_count.sh"
+            # Comment:
+            # Add to the album's folder name it's type: (S)Single, (EP)Extended Play or (FL)Full Length
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
@@ -151,13 +153,13 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         esac
         ((INDEX++))
     done
-elif [ "${TRACKS_OPS:-}" ]; then
+elif [ "${METADATA_OPS:-}" ]; then
     TRACKS=()
     for EXTENSION in $EXTENSIONS; do
         mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$ORIGIN" -iname "*.$EXTENSION" | sort)
     done
-    while [ -n "${TRACKS_OPS[$INDEX]}" ]; do
-        OPT="${TRACKS_OPS[$INDEX]}"
+    while [ -n "${METADATA_OPS[$INDEX]}" ]; do
+        OPT="${METADATA_OPS[$INDEX]}"
         case "$OPT" in
         multiple_artists)
             source "./lib/tracks/multiple_artists.sh"
