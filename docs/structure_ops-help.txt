@@ -9,10 +9,14 @@ STRUCTURE OPERATIONS:
       Prepends a type prefix to each album's folder name based on its track
       count: S/Single, EP/Extended Play, or FL/Full Length.
 
+  artist_base_structure
+      Reads the AlbumArtist tag from the first track of each album folder and
+      reorganizes albums into an Artist/Album structure under the origin
+      directory. Skips any album whose first track has no AlbumArtist tag set.
+
   help
       Show this help message.
 
 EXAMPLES:
-  metaudio -s=track_positioner 
-  metaudio -s=sort_album_type 
+  metaudio -s=artist_base_structure 
   metaudio -s=track_positioner,sort_album_type

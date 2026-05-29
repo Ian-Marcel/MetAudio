@@ -147,6 +147,9 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         sort_album_type)
             source "./lib/structure/albums_sort_by_track_count.sh"
             ;;
+        artist_base_structure)
+            source "./lib/structure/artist_base_structure.sh"
+            ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
             exit 1
