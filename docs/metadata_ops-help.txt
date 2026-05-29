@@ -16,6 +16,15 @@ METADATA OPERATIONS:
       Trims embedded artwork or cover art with a disproportionate aspect ratio
       down to 1:1, which is the standard ratio.
 
+  set_album_artist
+      Surveys the AlbumArtist tag across all tracks in each album folder. If
+      the tag is missing or set in a minority of tracks, falls back to the
+      Artist tag instead — splitting comma or feat.-delimited values before
+      counting. For FLAC files where multiple_artists has already run, the
+      existing ARTISTS tags are read directly without splitting. The value
+      appearing most frequently across all tracks is then written as
+      AlbumArtist on every track in the album.
+
   help
       Show this help message.
 

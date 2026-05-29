@@ -175,7 +175,7 @@ elif [ "${METADATA_OPS:-}" ]; then
             source "./lib/tracks/trim_track_artwork.sh"
             ;;
         set_album_artist)
-            source "./lib/tracks/set_albumartist.sh"
+            source "./lib/tracks/set_album_artist.sh"
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
