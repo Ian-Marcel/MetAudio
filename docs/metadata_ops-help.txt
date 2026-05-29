@@ -1,4 +1,4 @@
-Usage: metaudio -m=<op1,op2,...> [OPTIONS] <origin_directory>
+Usage: metaudio -m=[OPTIONS]
 
 METADATA OPERATIONS:
   multiple_artists

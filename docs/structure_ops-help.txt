@@ -1,4 +1,4 @@
-Usage: metaudio -s=<op1,op2,...> [OPTIONS] <origin_directory>
+Usage: metaudio -s=[OPTIONS]
 
 STRUCTURE OPERATIONS:
   track_positioner

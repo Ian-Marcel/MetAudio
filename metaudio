@@ -24,6 +24,9 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         if [ "${METADATA_OPS:-}" ]; then
             echo "ERROR: metadata operation was declared! Tracks and structure operations cannot run together."
             exit 1
+        elif [ ${ARG#*=} == 'help' ]; then
+            cat ./docs/structure_ops-help.txt
+            exit 0
         fi
         IFS=',' read -ra STRUCTURE_OPS <<<"${ARG#*=}"
         ;;
@@ -31,6 +34,9 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         if [ "${STRUCTURE_OPS:-}" ]; then
             echo "ERROR: structure operation was declared! Tracks and structure operations cannot run together."
             exit 1
+        elif [ ${ARG#*=} == 'help' ]; then
+            cat ./docs/metadata_ops-help.txt
+            exit 0
         fi
         IFS=',' read -ra METADATA_OPS <<<"${ARG#*=}"
         ;;
@@ -147,10 +153,6 @@ if [ "${STRUCTURE_OPS:-}" ]; then
             # Add to the album's folder name it's type:
             # (S)Single, (EP)Extended Play or (FL)Full Length
             ;;
-        help)
-            cat ./docs/structure_ops-help.txt
-            exit 0
-            ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
             exit 1
@@ -185,10 +187,6 @@ elif [ "${METADATA_OPS:-}" ]; then
             # Comment:
             # Trim disproporcional artwork's/coverart's ratio
             # to 1:1, which is the standart.
-            ;;
-        help)
-            cat ./docs/metadata_ops-help.txt
-            exit 0
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
