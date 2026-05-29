@@ -6,6 +6,7 @@
 echo '- ARTIST STRUCTURE ORGANIZER --------------------------------------------'
 
 # ── Deduplicate: collect unique album folders ─────────────────────────────────
+unset _SEEN
 declare -A _SEEN
 FOLDERS=()
 for TRACK in "${TRACKS[@]}"; do

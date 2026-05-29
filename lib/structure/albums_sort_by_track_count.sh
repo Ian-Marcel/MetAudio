@@ -5,6 +5,7 @@
 
 echo '- ALBUM TYPE CLASSIFIER -------------------------------------------------'
 # ── Deduplicate: collect unique parent folders ────────────────────────────────
+unset _SEEN
 declare -A _SEEN
 FOLDERS=()
 for TRACK in "${TRACKS[@]}"; do

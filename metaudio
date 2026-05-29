@@ -42,7 +42,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         ;;
     -d | --destination)
         ((INDEX++))
-        POST_DEST_DIGEST_INDEX=$INDEX # LATER: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
+        POST_DEST_DIGEST_INDEX=$INDEX # TODO: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
         ARG=${ARGS_DIGESTER[$INDEX]}
         if [ -d "$ARG" ]; then
             DESTINATION_PATH="$ARG"
