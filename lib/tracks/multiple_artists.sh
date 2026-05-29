@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Comment:
-# Adiciona o valor da tag ALBUM caso ela
-# não exista, requerimento: valor da tag
-# TITLE
+# Splits a single ARTIST tag containing multiple artists into a primary
+# ARTIST and separate entries for contributing artists. Intended for
+# Navidrome compatibility. FLAC EXCLUSIVE.
 
 echo '- MULTIPLE ARTISTS  -------------------------'
 for TRACK in "${TRACKS[@]}"; do
+    echo '---'
     # Variáveis de pré-operação.
     EXTENSION="${TRACK##*.}"   # Pega a extensão do arquivo.
     EXTENSION="${EXTENSION,,}" # Deixa ela em caixa baixa.

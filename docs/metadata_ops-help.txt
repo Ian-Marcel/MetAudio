@@ -3,8 +3,9 @@ Usage: metaudio -m=[OPTIONS]
 METADATA OPERATIONS:
   multiple_artists
       Splits a single ARTIST tag containing multiple artists into a primary
-      ARTIST and separate entries for contributing artists. Intended for
-      Navidrome compatibility.
+      ARTIST entry and separate entries for contributing artists, while also
+      setting the first artist as ALBUMARTIST. Intended for Navidrome
+      compatibility. FLAC ONLY.
 
   set_album_name
       Sets the ALBUM tag on files where it is missing, using the existing
