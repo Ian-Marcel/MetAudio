@@ -1,4 +1,4 @@
-Usage: metaudio -s=[OPTIONS]
+Usage: metaudio --structure-operation=[OPTIONS]
 
 STRUCTURE OPERATIONS:
   track_positioner
@@ -18,5 +18,5 @@ STRUCTURE OPERATIONS:
       Show this help message.
 
 EXAMPLES:
-  metaudio -s=artist_base_structure 
+  metaudio --structure-operation=artist_base_structure 
   metaudio -s=track_positioner,sort_album_type
