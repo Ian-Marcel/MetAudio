@@ -98,7 +98,8 @@ if [ "${DESTINATION_PATH:-}" ]; then
     case "$DESTINATION_TRANSPORT_METHOD" in
     move)
         dtmethod() {
-            mv "$@"
+            cp -ar "$1" "$2"
+            rm -rf "$1"
         }
         ;;
     copy)
@@ -186,6 +187,10 @@ elif [ "${METADATA_OPS:-}" ]; then
     done
 fi
 
-if [ "${DESTINATION_PATH:-}" ]; then
+if [ "${DESTINATION_PATH:-}" -a "$DESTINATION_TRANSPORT_METHOD" = 'move' ]; then
+    for ITEM in "$ORIGIN"/*; do
+        dtmethod "$ITEM" "$DESTINATION_PATH"/
+    done
+elif [ "${DESTINATION_PATH:-}" -a "$DESTINATION_TRANSPORT_METHOD" = 'copy' ]; then
     dtmethod "$ORIGIN"/* "$DESTINATION_PATH"/
 fi
