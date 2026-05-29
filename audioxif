@@ -17,27 +17,26 @@
 echo "AUDIOXIF SWISS-KNIFE"
 NO_PROMPTS='false'
 ORIGIN='.'
-INDEX=0
 UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.
 EXTENSIONS="mp3 flac m4a ogg opus wma"
-ARGS=$(echo $@ | tr -s ' ')
-read -ra ARGS_DIGESTER <<<"$ARGS"
+INDEX=0
+ARGS_DIGESTER=("$@")
 while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
-    ARG=${ARGS_DIGESTER[$INDEX]}
+    ARG="${ARGS_DIGESTER[$INDEX]}"
     case "$ARG" in
     -s=* | --structure-operation=*)
         if [ "${TRACKS_OPS:-}" ]; then
             echo "ERROR: tracks operation was declared! Tracks and structure operations cannot run together."
             exit 1
         fi
-        IFS=',' read -ra STRUCTURE_OPS <<<"$(echo "${ARGS_DIGESTER[$ARGD_INDEX]}" | sed 's/^[^=]*=//')"
+        IFS=',' read -ra STRUCTURE_OPS <<<"${ARG#*=}"
         ;;
     -t=* | --tracks-operation=*)
         if [ "${STRUCTURE_OPS:-}" ]; then
             echo "ERROR: structure operation was declared! Tracks and structure operations cannot run together."
             exit 1
         fi
-        IFS=',' read -ra TRACKS_OPS <<<"$(echo "${ARGS_DIGESTER[$ARGD_INDEX]}" | sed 's/^[^=]*=//')"
+        IFS=',' read -ra TRACKS_OPS <<<"${ARG#*=}"
         ;;
     -d | --destination)
         ((INDEX++))
@@ -74,7 +73,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
             ORIGIN="$ARG"
         else
-            echo -e "ERROR: Additonal unrecognized argument was declared! \nSee audioxif --help for guidance."
+            echo -e "ERROR: $ARG is an additonal unrecognized argument was declared! \nSee audioxif --help for guidance."
             exit 1
         fi
         ;;
@@ -85,20 +84,20 @@ if ! [ "${STRUCTURE_OPS:-}" -o "${TRACKS_OPS:-}" ]; then
     echo "No operation declared!"
     exit
 fi
-ORIGIN=$(realpath $ORIGIN)
+ORIGIN=$(realpath "$ORIGIN")
 if [ "${DESTINATION_PATH:-}" ]; then
-    DESTINATION_PATH=$(realpath $DESTINATION_PATH)
+    DESTINATION_PATH=$(realpath "$DESTINATION_PATH")
     echo "DESTINATION is: $DESTINATION_PATH"
     echo "DESTINATION transport method is: $DESTINATION_TRANSPORT_METHOD"
     case "$DESTINATION_TRANSPORT_METHOD" in
     move)
         dtmethod() {
-            mv $@
+            mv "$@"
         }
         ;;
     copy)
         dtmethod() {
-            cp -ar $@
+            cp -ar "$@"
         }
         ;;
     esac
@@ -127,7 +126,7 @@ if [ "$NO_PROMPTS" == 'false' ]; then
 fi
 
 # OPTS
-TARGET=${ORIGIN:-.}
+TARGET="${ORIGIN:-.}"
 
 if [ "${STRUCTURE_OPS:-}" ]; then
     while [ -n "${STRUCTURE_OPS[$INDEX]}" ]; do
@@ -135,7 +134,7 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         for EXTENSION in $EXTENSIONS; do
             mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
         done
-        OPT=${STRUCTURE_OPS[$INDEX]}
+        OPT="${STRUCTURE_OPS[$INDEX]}"
         case "$OPT" in
         track_positioner)
             source "./lib/structure/tracks_position_in_album.sh"
@@ -159,7 +158,7 @@ elif [ "${TRACKS_OPS:-}" ]; then
         mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$TARGET" -iname "*.$EXTENSION" | sort)
     done
     while [ -n "${TRACKS_OPS[$INDEX]}" ]; do
-        OPT=${TRACKS_OPS[$INDEX]}
+        OPT="${TRACKS_OPS[$INDEX]}"
         case "$OPT" in
         multiple_artists)
             source "./lib/tracks/multiple_artists.sh"

@@ -8,6 +8,7 @@ echo "- TRACKS POSITION IN ALBUM -------------------------"
 MESSAGE_OCURRANCE=0
 for TRACK in "${TRACKS[@]}"; do
     FILE="${TRACK##*/}"                                   # Name of the file containing the track.
+    FILE_FOLDER_PATH="${TRACK%/*}"                        # ~100% bash version for `dirname` command, not perfect though, for other cases, change delimiter(/) and variable name
     EXTENSION="${FILE##*.}"                               # Type of file (extension).
     EXTENSION="${EXTENSION,,}"                            # Type of file (extension). Lowercased
     [[ " $EXTENSIONS " == *" $EXTENSION "* ]] || continue # Pula se a extensão não está na lista.
@@ -23,7 +24,7 @@ for TRACK in "${TRACKS[@]}"; do
         continue
     fi
     if ! printf "$FILE" | grep --quiet -E "^0?$TRACK_NUMBER - "; then
-        mv "$TRACK" "$TARGET/$TRACK_NUMBER - $FILE"
+        mv "$TRACK" "$FILE_FOLDER_PATH/$TRACK_NUMBER - $FILE"
         echo "[INFO]: $FILE RENAMED TO $TRACK_NUMBER - $FILE"
     else
         echo "[WARN]: TRACK IS ALREADY NUMBERED: $FILE"
