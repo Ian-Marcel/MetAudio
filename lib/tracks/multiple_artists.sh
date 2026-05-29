@@ -17,7 +17,7 @@ for TRACK in "${TRACKS[@]}"; do
     OLD_TRACK_PATH=${OLD_TRACK_PATH:-$TRACK_PATH}
     echo "Editing file: $TRACK_FOLDER/$TRACK_FILE"
     if [[ "$EXTENSION" != "flac" ]]; then # Pula se a extensão não está na lista.
-        echo "[WARN]: Improper file extension! MULTIPLE ARTISTS  only supports flac files."
+        echo "[WARN]: Improper file extension! MULTIPLE ARTISTS only supports flac files."
         echo "[SKIP]"
         continue
     fi

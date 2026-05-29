@@ -30,10 +30,6 @@ for TRACK in "${TRACKS[@]}"; do
     }
     if [[ -n "$ALBUM" ]]; then
         echo "[SKIP] Álbum já definido: '$ALBUM' → $TRACK"
-        # if [ "$TRACK_FOLDER" != "$ALBUM_FOLDER" ]; then
-        #     mkdir -p "$TRACK_FOLDER_PATH/$ALBUM_FOLDER"
-        #     mv "$TRACK" "$TRACK_FOLDER_PATH/$ALBUM_FOLDER/"
-        # fi
         ((SKIPPED++)) || true
         continue
     fi
@@ -44,10 +40,6 @@ for TRACK in "${TRACKS[@]}"; do
     fi
     if metatool "$TRACK" >/dev/null 2>&1; then
         echo "[OK]   Album='$TITLE' → $TRACK"
-        # if [ "$TRACK_FOLDER" != "$ALBUM_FOLDER" ]; then
-        #     mkdir -p "$TRACK_FOLDER_PATH/$ALBUM_FOLDER"
-        #     mv "$TRACK" "$TRACK_FOLDER_PATH/$ALBUM_FOLDER/"
-        # fi
         ((CHANGED++)) || true
     else
         echo "[ERR]  Falha ao escrever em: $TRACK"
