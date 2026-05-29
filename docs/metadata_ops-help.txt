@@ -19,6 +19,6 @@ METADATA OPERATIONS:
       Show this help message.
 
 EXAMPLES:
-  metaudio -m=multiple_artists <origin_directory>
-  metaudio -m=multiple_artists,trim_artwork <origin_directory>
-  metaudio -m=set_album_name,trim_artwork <origin_directory> -d <destination_directory>
+  metaudio -m=multiple_artists 
+  metaudio -m=multiple_artists,trim_artwork 
+  metaudio -m=set_album_name,trim_artwork

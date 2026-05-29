@@ -13,6 +13,6 @@ STRUCTURE OPERATIONS:
       Show this help message.
 
 EXAMPLES:
-  metaudio -s=track_positioner <origin_directory>
-  metaudio -s=sort_album_type <origin_directory>
-  metaudio -s=track_positioner,sort_album_type <origin_directory> -d <destination_directory>
+  metaudio -s=track_positioner 
+  metaudio -s=sort_album_type 
+  metaudio -s=track_positioner,sort_album_type
