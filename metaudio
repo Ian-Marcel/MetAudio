@@ -67,6 +67,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         ;;
     -h | --help)
         cat ./docs/help.txt
+        exit 0
         ;;
     *)
         if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
