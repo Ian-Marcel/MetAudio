@@ -6,8 +6,8 @@ STRUCTURE OPERATIONS:
       to the filename.
 
   sort_album_type
-      Appends a type prefix to each album's folder name based on its track
-      count: (S) for Single, (EP) for Extended Play, or (FL) for Full Length.
+      Prepends a type prefix to each album's folder name based on its track
+      count: S/Single, EP/Extended Play, or FL/Full Length.
 
   help
       Show this help message.
