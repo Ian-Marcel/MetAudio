@@ -1,0 +1,24 @@
+Usage: metaudio -m=<op1,op2,...> [OPTIONS] <origin_directory>
+
+METADATA OPERATIONS:
+  multiple_artists
+      Splits a single ARTIST tag containing multiple artists into a primary
+      ARTIST and separate entries for contributing artists. Intended for
+      Navidrome compatibility.
+
+  set_album_name
+      Sets the ALBUM tag on files where it is missing, using the existing
+      TITLE tag value as the source. Has no effect on files that already
+      have an ALBUM tag set.
+
+  trim_artwork
+      Trims embedded artwork or cover art with a disproportionate aspect ratio
+      down to 1:1, which is the standard ratio.
+
+  help
+      Show this help message.
+
+EXAMPLES:
+  metaudio -m=multiple_artists <origin_directory>
+  metaudio -m=multiple_artists,trim_artwork <origin_directory>
+  metaudio -m=set_album_name,trim_artwork <origin_directory> -d <destination_directory>

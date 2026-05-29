@@ -1,0 +1,18 @@
+Usage: metaudio -s=<op1,op2,...> [OPTIONS] <origin_directory>
+
+STRUCTURE OPERATIONS:
+  track_positioner
+      Reads the track number from each audio file's metadata and prepends it
+      to the filename.
+
+  sort_album_type
+      Appends a type prefix to each album's folder name based on its track
+      count: (S) for Single, (EP) for Extended Play, or (FL) for Full Length.
+
+  help
+      Show this help message.
+
+EXAMPLES:
+  metaudio -s=track_positioner <origin_directory>
+  metaudio -s=sort_album_type <origin_directory>
+  metaudio -s=track_positioner,sort_album_type <origin_directory> -d <destination_directory>
