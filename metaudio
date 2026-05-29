@@ -9,8 +9,6 @@
 #   metaudio <origin_directory> --structure-operation=opt1,opt2 --destination <destination_directory>
 #   metaudio -d <destination_directory> <origin_directory> -m=opt1,opt2
 #   metaudio <origin_directory> -s=opt1,opt2
-#   metaudio \
-###   --metadata-operation=opt1,opt2,opt3
 
 echo "METAUDIO SWISS-KNIFE"
 NO_PROMPTS='false'
@@ -66,6 +64,9 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         ;;
     -y | --assume-yes)
         NO_PROMPTS='true'
+        ;;
+    -h | --help)
+        cat ./docs/help.txt
         ;;
     *)
         if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
@@ -142,7 +143,8 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         sort_album_type)
             source "./lib/structure/albums_sort_by_track_count.sh"
             # Comment:
-            # Add to the album's folder name it's type: (S)Single, (EP)Extended Play or (FL)Full Length
+            # Add to the album's folder name it's type:
+            # (S)Single, (EP)Extended Play or (FL)Full Length
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."

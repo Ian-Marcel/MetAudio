@@ -1,0 +1,40 @@
+Usage: metaudio [OPTIONS] <origin_directory>
+
+OPTIONS:
+  -m=<op1,op2,...>, --metadata-operation=<op1,op2,...>
+      Operations to perform on file metadata. Accepts a comma-separated list
+      of operations. Conflicts with --structure-operation/-s.
+
+  -s=<op1,op2,...>, --structure-operation=<op1,op2,...>
+      Operations to perform on file/directory structure. Accepts a
+      comma-separated list of operations. Conflicts with --metadata-operation/-m.
+
+  -d <directory>, --destination <directory>
+      Directory to send output files to. Defaults to move behavior if
+      --copy/-c is not declared. The transport method flag (-c/-m) must be
+      declared either before -d/--destination or after the destination path.
+
+  -m, --move
+      Move files to the destination directory. This is the default transport
+      method when --destination/-d is declared. Providing this flag explicitly
+      is optional and serves as a clarification aid in scripts.
+
+  -c, --copy
+      Copy files to the destination directory instead of moving them.
+
+  -y, --assume-yes
+      Skip all confirmation prompts and assume yes.
+
+  -h, --help
+      Show this help message.
+
+EXAMPLES:
+  metaudio --metadata-operation=opt1,opt2 <origin_directory>
+  metaudio <origin_directory> --structure-operation=opt1,opt2 --destination <destination_directory>
+  metaudio -d <destination_directory> <origin_directory> -m=opt1,opt2
+  metaudio <origin_directory> -s=opt1,opt2
+
+NOTES:
+  - --metadata-operation and --structure-operation cannot be used together.
+  - <origin_directory> can be declared at any position in the argument list.
+  - If --destination is not declared, files are processed in place.
