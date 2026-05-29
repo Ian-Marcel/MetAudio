@@ -126,7 +126,6 @@ if [ "$NO_PROMPTS" == 'false' ]; then
 fi
 
 # OPTS
-# TARGET="${ORIGIN:-.}"
 
 if [ "${STRUCTURE_OPS:-}" ]; then
     while [ -n "${STRUCTURE_OPS[$INDEX]}" ]; do
