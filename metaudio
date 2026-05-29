@@ -5,16 +5,14 @@
 #   --structure-operation= | -s=opt1,opt2,... @required(conflicts with --metadata-operation/-m)
 #   --destination "directory" | -d "directory"  @optional
 # EXAMPLES:
-#   audioxif --metadata-operation=opt1,opt2 <origin_directory>
-#   audioxif <origin_directory> --structure-operation=opt1,opt2 --destination <destination_directory>
-#   audioxif -d <destination_directory> <origin_directory> -m=opt1,opt2
-#   audioxif <origin_directory> -s=opt1,opt2
-#   audioxif --metadata-operation=\
-##  opt1,\
-##  opt2,\
-##  opt3
+#   metaudio --metadata-operation=opt1,opt2 <origin_directory>
+#   metaudio <origin_directory> --structure-operation=opt1,opt2 --destination <destination_directory>
+#   metaudio -d <destination_directory> <origin_directory> -m=opt1,opt2
+#   metaudio <origin_directory> -s=opt1,opt2
+#   metaudio \
+###   --metadata-operation=opt1,opt2,opt3
 
-echo "AUDIOXIF SWISS-KNIFE"
+echo "METAUDIO SWISS-KNIFE"
 NO_PROMPTS='false'
 ORIGIN='.'
 UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.

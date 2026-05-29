@@ -4,7 +4,7 @@
 # não exista, requerimento: valor da tag
 # TITLE
 
-echo "- AUDIOEXIF SWISS-KNIFE - ADD UNSET ALBUM NAME METADATA BASED ON TITLE -------------------------"
+echo "- ADD UNSET ALBUM NAME METADATA BASED ON TITLE -------------------------"
 CHANGED=0
 SKIPPED=0
 ERRORS=0

@@ -4,7 +4,7 @@
 # não exista, requerimento: valor da tag
 # TITLE
 
-echo '- AUDIOEXIF SWISS-KNIFE - MULTIPLE ARTISTS  -------------------------'
+echo '- MULTIPLE ARTISTS  -------------------------'
 for TRACK in "${TRACKS[@]}"; do
     # Variáveis de pré-operação.
     EXTENSION="${TRACK##*.}"   # Pega a extensão do arquivo.

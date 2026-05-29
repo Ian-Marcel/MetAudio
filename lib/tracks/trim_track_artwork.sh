@@ -3,7 +3,7 @@
 # Trim disproporcional artwork's/coverart's ratio
 # to match 1:1, which is the standart.
 
-echo "- AUDIOEXIF SWISS-KNIFE - TRIM TRACK ARTWORK/COVERART TO MATCH 1:1 RATIO  -------------------------"
+echo "- TRIM TRACK ARTWORK/COVERART TO MATCH 1:1 RATIO  -------------------------"
 CURRENT_DIR="$PWD"
 WORK_DIR="/tmp/operation-$RANDOM$RANDOM$RANDOM"
 mkdir -p "$WORK_DIR"
