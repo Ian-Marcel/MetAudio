@@ -27,7 +27,11 @@ for TRACK in "${TRACKS[@]}"; do
     }
     printf "  [1/3] Title found: %s\n" "$TRACK_TITLE"
     printf "  [2/3] Extracting cover art -> original.%s\n" "$TRACK_COVER_ART"
-    exiftool -CoverArt -b "$TRACK" >"original.$TRACK_COVER_ART"
+    if [ -n "$(exiftool -CoverArt -b "$TRACK")" ]; then
+        exiftool -CoverArt -b "$TRACK" >"original.$TRACK_COVER_ART"
+    elif [ -n "$(exiftool -Picture -b "$TRACK")" ]; then
+        exiftool -Picture -b "$TRACK" >"original.$TRACK_COVER_ART"
+    fi
     ART_DIMS=$(ffprobe -v error -select_streams v:0 \
         -show_entries stream=width,height -of csv=p=0 "original.$TRACK_COVER_ART" 2>/dev/null)
     ART_W="${ART_DIMS%%,*}"
