@@ -15,10 +15,12 @@ for TRACK in "${TRACKS[@]}"; do
     printf "\n[>>] Processing: %s\n" "$TRACK"
     TRACK_TITLE=$(exiftool -s3 -Title "$TRACK" 2>/dev/null)                                     # Pega o titulo da música.
     printf -v TRACK_COVER_ART "CoverArt - %s.jpg" "${TRACK_TITLE//$UNSAFE_FILE_CHARS_KILLER/_}" # Gera o nome do CoverArt da música baseado no titulo dela.
+    echo "$TRACK_COVER_ART"
     metatool() {
         case "$EXTENSION" in
         'flac')
-            metaflac --import-picture-from="$TRACK_COVER_ART" "$@"
+            metaflac --remove --block-type=PICTURE "$@" &&
+                metaflac --import-picture-from="$TRACK_COVER_ART" "$@"
             ;;
         *)
             exiftool -overwrite_original "-CoverArt<=$TRACK_COVER_ART" "$@"
@@ -27,11 +29,12 @@ for TRACK in "${TRACKS[@]}"; do
     }
     printf "  [1/3] Title found: %s\n" "$TRACK_TITLE"
     printf "  [2/3] Extracting cover art -> original.%s\n" "$TRACK_COVER_ART"
-    if [ -n "$(exiftool -CoverArt -b "$TRACK")" ]; then
-        exiftool -CoverArt -b "$TRACK" >"original.$TRACK_COVER_ART"
-    elif [ -n "$(exiftool -Picture -b "$TRACK")" ]; then
-        exiftool -Picture -b "$TRACK" >"original.$TRACK_COVER_ART"
-    fi
+    # if [ -n "$(exiftool -CoverArt "$TRACK")" ]; then
+    #     exiftool -CoverArt -b "$TRACK" >./"original.$TRACK_COVER_ART"
+    # elif [ -n "$(exiftool -Picture "$TRACK")" ]; then
+    #     exiftool -Picture -b "$TRACK" >./"original.$TRACK_COVER_ART"
+    # fi
+    metaflac --export-picture-to="./original.$TRACK_COVER_ART" "$TRACK"
     ART_DIMS=$(ffprobe -v error -select_streams v:0 \
         -show_entries stream=width,height -of csv=p=0 "original.$TRACK_COVER_ART" 2>/dev/null)
     ART_W="${ART_DIMS%%,*}"
