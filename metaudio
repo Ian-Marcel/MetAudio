@@ -14,7 +14,7 @@ echo "METAUDIO SWISS-KNIFE"
 NO_PROMPTS='false'
 ORIGIN='.'
 UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.
-EXTENSIONS="mp3 flac m4a ogg opus wma"
+EXTENSIONS="flac m4a"                    # No Futuro: mp3 ogg opus wma
 INDEX=0
 ARGS_DIGESTER=("$@")
 while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
