@@ -41,7 +41,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         IFS=',' read -ra METADATA_OPS <<<"${ARG#*=}"
         ;;
     -d | --destination)
-        ((INDEX++))
+        INDEX=$((INDEX + 1))
         POST_DEST_DIGEST_INDEX=$INDEX # TODO: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
         ARG=${ARGS_DIGESTER[$INDEX]}
         if [ -d "$ARG" ]; then
@@ -84,7 +84,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
         fi
         ;;
     esac
-    ((INDEX++))
+    INDEX=$((INDEX + 1))
 done
 if ! [ "${STRUCTURE_OPS:-}" -o "${METADATA_OPS:-}" ]; then
     echo "No operation declared!"
@@ -112,7 +112,7 @@ fi
 INDEX=0
 echo "ORIGIN is: $ORIGIN"
 if [ "$NO_PROMPTS" == 'false' ]; then
-    while [[ true ]]; do
+    while [ true ]; do
         echo "Is info above correct? [Y/n]"
         read -rp 'Answer: ' CORASWR
         case "$CORASWR" in
@@ -156,7 +156,7 @@ if [ "${STRUCTURE_OPS:-}" ]; then
             exit 1
             ;;
         esac
-        ((INDEX++))
+        INDEX=$((INDEX + 1))
     done
 elif [ "${METADATA_OPS:-}" ]; then
     TRACKS=()
@@ -183,7 +183,7 @@ elif [ "${METADATA_OPS:-}" ]; then
             exit 1
             ;;
         esac
-        ((INDEX++))
+        INDEX=$((INDEX + 1))
     done
 fi
 

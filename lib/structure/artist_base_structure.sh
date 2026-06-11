@@ -17,6 +17,9 @@ for TRACK in "${TRACKS[@]}"; do
     fi
 done
 
+# printf '%s \n' "${FOLDERS[@]}"
+# exit 1
+#
 # ── Helpers ───────────────────────────────────────────────────────────────────
 get_album_artist() { # args: <file>
     exiftool -AlbumArtist -s3 "$1" 2>/dev/null
