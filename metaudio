@@ -31,7 +31,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
     -s=* | --structure-operation=*)
         if [ "${METADATA_OPS:-}" ]; then
             echo "ERROR: metadata operation was declared! Tracks and structure operations cannot run together."
-            exit 1
+            exit 2
         elif [ ${ARG#*=} == 'help' ]; then
             cat "$SHPWD/docs/structure_ops-help.txt"
             exit 0
@@ -41,7 +41,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
     -m=* | --metadata-operation=*)
         if [ "${STRUCTURE_OPS:-}" ]; then
             echo "ERROR: structure operation was declared! Tracks and structure operations cannot run together."
-            exit 1
+            exit 2
         elif [ ${ARG#*=} == 'help' ]; then
             cat "$SHPWD/docs/metadata_ops-help.txt"
             exit 0
@@ -67,7 +67,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
                 echo "ERROR: -d/--destination argument was declared without a path!"
                 ;;
             esac
-            exit
+            exit 2
         fi
         ;;
     -m | --move) # Default destination transport method, is a meta-argument, only purpose is for clarification in scripts.
@@ -88,7 +88,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
             ORIGIN="$ARG"
         else
             echo -e "ERROR: $ARG is an additonal unrecognized argument was declared! \nSee audioxif --help for guidance."
-            exit 1
+            exit 2
         fi
         ;;
     esac
@@ -96,7 +96,7 @@ while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
 done
 if ! [ "${STRUCTURE_OPS:-}" -o "${METADATA_OPS:-}" ]; then
     echo "No operation declared!"
-    exit
+    exit 2
 fi
 ORIGIN=$(realpath "$ORIGIN")
 if [ "${DESTINATION_PATH:-}" ]; then
@@ -161,7 +161,7 @@ if [ "${STRUCTURE_OPS:-}" ]; then
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
-            exit 1
+            exit 2
             ;;
         esac
         INDEX=$((INDEX + 1))
@@ -188,7 +188,7 @@ elif [ "${METADATA_OPS:-}" ]; then
             ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
-            exit 1
+            exit 2
             ;;
         esac
         INDEX=$((INDEX + 1))
