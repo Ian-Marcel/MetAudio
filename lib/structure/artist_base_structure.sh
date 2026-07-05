@@ -26,6 +26,10 @@ sanitize_name() { # args: <name> — strips path separators and control characte
     printf '%s' "$1" | tr -d '/' | tr -d '\000-\037'
 }
 
+normalize() { # args: <name> — case-insensitive comparison key (NOT fuzzy matching)
+    printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
 # ── Main loop (one iteration per album folder) ────────────────────────────────
 for ALBUM_PATH in "${FOLDERS[@]}"; do
     ALBUM_NAME=$(basename "$ALBUM_PATH")
@@ -51,8 +55,21 @@ for ALBUM_PATH in "${FOLDERS[@]}"; do
     ARTIST_DIR="$ORIGIN/$ARTIST"
     DEST="$ARTIST_DIR/$ALBUM_NAME"
 
-    if [[ "$ALBUM_PATH" == "$DEST" ]]; then
-        echo "[SKIP] $ALBUM_NAME is already under $ARTIST/."
+    # Check up to 2 levels above the album folder for a directory already
+    # named after the artist, rather than only checking the exact
+    # $ORIGIN/$ARTIST/$ALBUM_NAME path.
+    PARENT_1="$(dirname "$ALBUM_PATH")"
+    PARENT_1_NAME="$(basename "$PARENT_1")"
+    PARENT_2="$(dirname "$PARENT_1")"
+    PARENT_2_NAME="$(basename "$PARENT_2")"
+
+    if [[ "$(normalize "$PARENT_1_NAME")" == "$(normalize "$ARTIST")" ]]; then
+        echo "[SKIP] $ALBUM_NAME is already under an artist-named folder ($PARENT_1_NAME, 1 level up)."
+        continue
+    fi
+
+    if [[ "$(normalize "$PARENT_2_NAME")" == "$(normalize "$ARTIST")" ]]; then
+        echo "[SKIP] $ALBUM_NAME is already under an artist-named folder ($PARENT_2_NAME, 2 levels up)."
         continue
     fi
 
