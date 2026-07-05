@@ -71,6 +71,7 @@ Passing `help` as the value of `-m`/`--metadata-operation` or `-s`/`--structure-
 | `track_positioner` | Reads the track number from each file's metadata and prepends it to the filename (e.g. `3 - Song Title.flac`). Skips files that are already numbered, and warns/skips files with no retrievable track number. |
 | `sort_album_type` | Prepends a type prefix to each album folder's name based on track count: `Single -` (1–2 tracks), `Extended Play -` (3–7 tracks), or `Full Length -` (8+ tracks). Skips folders already classified, and strips any pre-existing non-classification prefix (e.g. a leading year) first. |
 | `artist_base_structure` | Reads the `AlbumArtist` tag from the first track of each album folder and moves the album under an `Artist/Album` structure inside the origin directory. Skips albums whose first track has no `AlbumArtist` tag, and skips (with a warning) if the destination path already exists. |
+| `album_folder_sync` | Reads the Album tag from the first track of each album folder and renames the folder to match it (case-insensitively), preserving any sort_album_type classification prefix (Single/Extended Play/Full Length -) already present. Skips albums with no Album tag set, folders already matching, and cases where the target name already exists.|
 
 Both operation types accept `help` as the option value to print their dedicated help file (`docs/metadata_ops-help.txt` or `docs/structure_ops-help.txt`).
 
