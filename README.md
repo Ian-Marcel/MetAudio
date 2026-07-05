@@ -77,30 +77,3 @@ Both operation types accept `help` as the option value to print their dedicated 
 ## Confirmation Prompt
 
 Before executing (unless `-y`/`--assume-yes` is passed), the script prints the resolved `ORIGIN` (and `DESTINATION`/transport method, if set) and asks `Is info above correct? [Y/n]` before proceeding.
-
-## Project Structure
-
-```
-metaudio                                    # Main entry-point script
-lib/
-  check-dependencies.sh                     # Verifies/installs ffmpeg, metaflac, exiftool
-  structure/
-    tracks_position_in_album.sh             # track_positioner
-    albums_sort_by_track_count.sh           # sort_album_type
-    artist_base_structure.sh                # artist_base_structure
-  tracks/
-    add_unset_album.sh                      # set_album_name
-    trim_track_artwork.sh                   # trim_artwork
-    set_album_artist.sh                     # set_album_artist
-    multiple_artists.sh                     # multiple_artists
-docs/
-  help.txt                                  # General help text
-  metadata_ops-help.txt                     # Metadata operations help text
-  structure_ops-help.txt                    # Structure operations help text
-```
-
-## Caveats
-
-[Unverified] There is no LICENSE file, version number, or author/changelog information present anywhere in the uploaded project, so none is included here.
-
-[Inference] Because several operations move or rename files and overwrite metadata in place, it would be prudent to back up a music library before running destructive operations (especially without `-y`, so the confirmation prompt can be reviewed) — this recommendation is not stated in the project files themselves and reflects general caution given what the code does.
