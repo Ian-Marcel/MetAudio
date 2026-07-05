@@ -9,6 +9,13 @@ STRUCTURE OPERATIONS:
       Prepends a type prefix to each album's folder name based on its track
       count: S/Single, EP/Extended Play, or FL/Full Length.
 
+  album_folder_sync
+      Reads the Album tag from the first track of each album folder and
+      renames the folder to match it (case-insensitively), preserving any
+      sort_album_type classification prefix (Single/Extended Play/Full
+      Length -) already present. Skips albums with no Album tag set, folders
+      already matching, and cases where the target name already exists.
+
   artist_base_structure
       Reads the AlbumArtist tag from the first track of each album folder and
       reorganizes albums into an Artist/Album structure under the origin

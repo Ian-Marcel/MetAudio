@@ -167,6 +167,9 @@ if [ "${STRUCTURE_OPS:-}" ]; then
         artist_base_structure)
             source "$SHPWD/lib/structure/artist_base_structure.sh"
             ;;
+        album_folder_sync)
+            source "$SHPWD/lib/structure/album_folder_sync.sh"
+            ;;
         *)
             echo -e "ERROR: $OPT is an unrecognized option. \nExiting..."
             exit 2
