@@ -62,8 +62,7 @@ done
 # ── Main loop (one iteration per unique folder) ───────────────────────────────
 for FOLDER in "${FOLDERS[@]}"; do
     mapfile -t FOLDER_TRACKS < <(find "$FOLDER" -maxdepth 1 \
-        \( -iname "*.flac" -o -iname "*.m4a" -o -iname "*.mp3" \
-        -o -iname "*.ogg" -o -iname "*.opus" -o -iname "*.wma" \) | sort)
+        \( -iname "*.flac" -o -iname "*.m4a" \) | sort)
 
     if ((${#FOLDER_TRACKS[@]} == 0)); then
         echo "[WARN] $FOLDER — no audio files found at depth 1, skipping."

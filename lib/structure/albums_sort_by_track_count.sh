@@ -46,9 +46,7 @@ for TRACK_PATH in "${FOLDERS[@]}"; do
     fi
 
     COUNT=$(find "$TRACK_PATH" -maxdepth 1 \
-        \( -iname "*.flac" -o -iname "*.m4a" -o -iname "*.mp3" \
-        -o -iname "*.ogg" -o -iname "*.opus" -o -iname "*.wma" \) |
-        wc -l)
+        \( -iname "*.flac" -o -iname "*.m4a" \) | wc -l)
 
     if [[ "$TRACK_PATH" != $ORIGIN ]]; then
         if ((COUNT >= 1 && COUNT <= 2)); then
