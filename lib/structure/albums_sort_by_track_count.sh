@@ -50,14 +50,16 @@ for TRACK_PATH in "${FOLDERS[@]}"; do
         -o -iname "*.ogg" -o -iname "*.opus" -o -iname "*.wma" \) |
         wc -l)
 
-    if ((COUNT >= 1 && COUNT <= 2)); then
-        change_folder_name "$TRACK_PATH" "$PARENT" "$TRACK_FOLDER" "Single"
-    elif ((COUNT >= 3 && COUNT <= 7)); then
-        change_folder_name "$TRACK_PATH" "$PARENT" "$TRACK_FOLDER" "Extended Play"
-    elif ((COUNT > 7)); then
-        change_folder_name "$TRACK_PATH" "$PARENT" "$TRACK_FOLDER" "Full Length"
-    else
-        echo "[WARN] $TRACK_FOLDER — no audio files found at depth 1, skipping."
+    if [[ "$TRACK_PATH" != $ORIGIN ]]; then
+        if ((COUNT >= 1 && COUNT <= 2)); then
+            change_folder_name "$TRACK_PATH" "$PARENT" "$TRACK_FOLDER" "Single"
+        elif ((COUNT >= 3 && COUNT <= 7)); then
+            change_folder_name "$TRACK_PATH" "$PARENT" "$TRACK_FOLDER" "Extended Play"
+        elif ((COUNT > 7)); then
+            change_folder_name "$TRACK_PATH" "$PARENT" "$TRACK_FOLDER" "Full Length"
+        else
+            echo "[WARN] $TRACK_FOLDER — no audio files found at depth 1, skipping."
+        fi
     fi
 done
 
