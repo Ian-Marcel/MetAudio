@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+trap 'echo -e "[ FATAL ] Error in ${BASH_SOURCE[0]} at line ${LINENO}: ${BASH_COMMAND} \n\n[ EXIT ${?} ]" >&2' ERR
 # OPTIONS:
 #   --metadata-operation= | -m=opt1,opt2,... @required(conflicts with --structure-operation/-s)
 #   --structure-operation= | -s=opt1,opt2,... @required(conflicts with --metadata-operation/-m)
@@ -32,8 +34,9 @@ ARGS_DIGESTER=("$@")
 
 # Check depedencies
 source "$SHPWD/lib/check-dependencies.sh"
+NULLIFIER=$(openssl rand -hex 5)_null_$(openssl rand -hex 5)
 
-while [ -n "${ARGS_DIGESTER[$INDEX]}" ]; do
+while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
     ARG="${ARGS_DIGESTER[$INDEX]}"
     case "$ARG" in
     -s=* | --structure-operation=*)
@@ -151,7 +154,7 @@ fi
 # OPTS
 
 if [ "${STRUCTURE_OPS:-}" ]; then
-    while [ -n "${STRUCTURE_OPS[$INDEX]}" ]; do
+    while [ "${STRUCTURE_OPS[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
         TRACKS=()
         for EXTENSION in $EXTENSIONS; do
             mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$ORIGIN" -iname "*.$EXTENSION" | sort)
@@ -182,7 +185,7 @@ elif [ "${METADATA_OPS:-}" ]; then
     for EXTENSION in $EXTENSIONS; do
         mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$ORIGIN" -iname "*.$EXTENSION" | sort)
     done
-    while [ -n "${METADATA_OPS[$INDEX]}" ]; do
+    while [ "${METADATA_OPS[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
         OPT="${METADATA_OPS[$INDEX]}"
         case "$OPT" in
         multiple_artists)
