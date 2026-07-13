@@ -17,17 +17,17 @@ for TRACK in "${TRACKS[@]}"; do
     ALBUM_FOLDER="${ALBUM/$UNSAFE_FILE_CHARS_KILLER/_}"
     TRACK_NUMBER=$(exiftool -s3 -Tracknumber "$TRACK")
     if [ $MESSAGE_OCURRANCE == 0 ]; then
-        echo "[INFO]: ABOUT TO EDIT ALBUM: $ALBUM"
+        echo "[ INFO ]: ABOUT TO EDIT ALBUM: $ALBUM"
     fi
     if [ -z "$TRACK_NUMBER" ]; then
-        echo -e "[ERROR]: Tracknumber couldn't be retrieved! \nMaybe this is a Single? \nSkipping..."
+        echo -e "[ WARN ]: Tracknumber couldn't be retrieved! \nMaybe this is a Single? \nSkipping..."
         continue
     fi
     if ! printf "$FILE" | grep --quiet -E "^0?$TRACK_NUMBER - "; then
         mv "$TRACK" "$FILE_FOLDER_PATH/$TRACK_NUMBER - $FILE"
-        echo "[INFO]: $FILE RENAMED TO $TRACK_NUMBER - $FILE"
+        echo "[ INFO ]: $FILE RENAMED TO $TRACK_NUMBER - $FILE"
     else
-        echo "[WARN]: TRACK IS ALREADY NUMBERED: $FILE"
+        echo "[ INFO ]: TRACK IS ALREADY NUMBERED: $FILE"
     fi
     MESSAGE_OCURRANCE=1
     continue

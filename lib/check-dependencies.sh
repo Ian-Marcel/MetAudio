@@ -1,3 +1,13 @@
+if ! command -v openssl >/dev/null 2>&1; then
+    echo -e "[ WARN ] openssl wasn't found, attempting to install it."
+    sudo apt update 2>/dev/null && sudo apt install -y openssl 2>/dev/null ||
+        sudo dnf install -y --quiet openssl 2>/dev/null ||
+        sudo pacman -Sy --noconfirm --quiet openssl 2>/dev/null
+    if [ $? -gt 1 ]; then
+        echo "Failed to install openssl. Exiting"
+        exit 2
+    fi
+fi
 if ! command -v ffmpeg >/dev/null 2>&1; then
     echo -e "[ WARN ] ffmpeg wasn't found, attempting to install it."
     sudo apt update 2>/dev/null && sudo apt install -y ffmpeg 2>/dev/null ||

@@ -11,7 +11,7 @@ declare -A _SEEN
 FOLDERS=()
 for TRACK in "${TRACKS[@]}"; do
     FOLDER=$(dirname "$TRACK")
-    if [[ -z "${_SEEN[$FOLDER]}" ]]; then
+    if [[ -z "${_SEEN[$FOLDER]:-}" ]]; then
         _SEEN[$FOLDER]=1
         FOLDERS+=("$FOLDER")
     fi

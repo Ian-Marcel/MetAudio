@@ -16,8 +16,8 @@ printf ' __  __      _                     _ _
 |  \/  |    | |     /\            | (_)      
 | \  / | ___| |_   /  \  _   _  __| |_  ___  
 | |\/| |/ _ \ __| / /\ \| | | |/ _` | |/ _ \ 
-| |  | |  __/ |_ / ____ \ |_| | (_| | | (_) |
-|_|  |_|\___|\__/_/    \_\__,_|\__,_|_|\___/ 
+| |  | |  __/ |_ / ____ \ |_| | (_| | | (_) | 
+|_|  |_|\___|\__/_/    \_\__,_|\__,_|_|\___/  
                                              
 '
 
@@ -209,10 +209,10 @@ elif [ "${METADATA_OPS:-}" ]; then
     done
 fi
 
-if [ "${DESTINATION_PATH:-}" -a "$DESTINATION_TRANSPORT_METHOD" = 'move' ]; then
+if [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" = 'move' ]; then
     for ITEM in "$ORIGIN"/*; do
         dtmethod "$ITEM" "$DESTINATION_PATH"/
     done
-elif [ "${DESTINATION_PATH:-}" -a "$DESTINATION_TRANSPORT_METHOD" = 'copy' ]; then
+elif [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" = 'copy' ]; then
     dtmethod "$ORIGIN"/* "$DESTINATION_PATH"/
 fi

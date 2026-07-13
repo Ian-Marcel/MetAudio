@@ -15,7 +15,7 @@ declare -A _SEEN
 FOLDERS=()
 for TRACK in "${TRACKS[@]}"; do
     FOLDER=$(dirname "$TRACK")
-    if [[ -z "${_SEEN[$FOLDER]}" ]]; then
+    if [[ -z "${_SEEN[$FOLDER]:-}" ]]; then
         _SEEN[$FOLDER]=1
         FOLDERS+=("$FOLDER")
     fi
@@ -31,7 +31,7 @@ split_and_emit() { # args: <raw_value> — splits on comma/feat. and prints one 
     local RAW
     RAW=$(echo "$1" | sed -E 's/\s+feat\.?\s+/,/g')
     local HAS_SEPARATOR
-    HAS_SEPARATOR=$(echo "$RAW" | grep -o ',')
+    HAS_SEPARATOR=$(echo "$RAW" | grep -o ',' || true)
     if [[ -n "$HAS_SEPARATOR" ]]; then
         IFS=',' read -ra PARTS <<<"$RAW"
         for PART in "${PARTS[@]}"; do

@@ -23,7 +23,7 @@ for TRACK in "${TRACKS[@]}"; do
     fi
     # Variáveis de pesquisas.
     ARTIST_TAG_COUNT=$(metaflac --show-tag=ARTIST{,S} "$TRACK" | grep -inc ARTIST)                        # Procura a quantidade de tags 'ARTIST' na música.
-    FAKE_LONE_ARTIST_TAG=$(metaflac --show-tag=ARTIST "$TRACK" | grep -o ',')                             # Procura a divisoria (linha), pois se existir, provavelmente existe mais de um artista.
+    FAKE_LONE_ARTIST_TAG=$(metaflac --show-tag=ARTIST "$TRACK" | grep -o ',' || true)                     # Procura a divisoria (linha), pois se existir, provavelmente existe mais de um artista.
     POSITIVE_TAGS=$(metaflac --show-tag={ALBUMARTIST,ARTISTS} "$TRACK")                                   # Procura pelas mesmas tags que serão adicionadas, pois se existir, da pra pular a edição do arquivo atual.
     ALL_ARTISTS=$(metaflac --show-tag=ARTIST "$TRACK" | sed 's/^[^=]*=//' | sed -E 's/\s+feat\.?\s+/,/g') # Coleta todos o artistas da música.
     TRACK_ALBUMARTIST=$(metaflac --show-tag=ALBUMARTIST "$TRACK")                                         # Procura pela tag ALBUMARTIST, para se caso não haja, seja adicionado com o valor de $ALBUMARTIST.

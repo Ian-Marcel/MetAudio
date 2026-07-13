@@ -17,7 +17,7 @@ for TRACK in "${TRACKS[@]}"; do
     [[ " $EXTENSIONS " == *" $EXT "* ]] || continue
     TITLE=$(exiftool -s3 -Title "$TRACK" 2>/dev/null)
     ALBUM=$(exiftool -s3 -Album "$TRACK" 2>/dev/null)
-    ALBUM_FOLDER="${ALBUM//$UNSAFE_TRACK_CHARS_KILLER/_}"
+    ALBUM_FOLDER="${ALBUM//$UNSAFE_FILE_CHARS_KILLER/_}"
     metatool() {
         case "$EXT" in
         'flac')
