@@ -1,80 +1,78 @@
-# MetAudio
+```
+__  __      _                     _ _
+|  \/  |    | |     /\            | (_)      
+| \  / | ___| |_   /  \  _   _  __| |_  ___
+| |\/| |/ _ \ __| / /\ \| | | |/ _` | |/ _ \
+| |  | |  __/ |_ / ____ \ |_| | (_| | | (_) |
+|_|  |_|\___|\__/_/    \_\__,_|\__,_|_|\___/
 
-A Bash command-line tool for batch-editing audio file metadata and reorganizing music library folder structures. It operates on `.flac` and `.m4a` files (per the `EXTENSIONS` variable in the main script, which also has a comment noting `mp3 ogg opus wma` as a possible future addition).
+```
 
-## Dependencies
+A Bash tool for batch-editing music file tags and reorganizing your music library's folder structure.
 
-Checked automatically at runtime by `lib/check-dependencies.sh`, which attempts to install any that are missing via `apt`, `dnf`, or `pacman`:
+Works on `.flac` and `.m4a` files.
 
-- `ffmpeg`
-- `metaflac` (from the `flac` package)
-- `exiftool`
+---
 
-## Installation
+## What it does, in plain terms
 
-Clone or copy this project to a local directory, then run the `metaudio` script directly (it resolves its own script directory at runtime, so it can be invoked from anywhere):
+- **Metadata operations** — fix the *tags inside* your music files (artist names, album names, cover art, etc.)
+- **Structure operations** — fix *how your files and folders* are named and organized
+
+You pick one type of operation, tell it which folder to work on, and it does the rest.
+
+---
+
+## Install
+
+1. Copy or clone this project anywhere on your computer.
+2. Run the script directly:
 
 ```bash
 ./metaudio [OPTIONS] <origin_directory>
 ```
 
-[Inference] Making the script executable (`chmod +x metaudio`) or placing it on your `PATH` would likely be needed for convenient use, though this is not stated in the project files themselves.
+[Inference] You will likely want to run `chmod +x metaudio` first, or add it to your `PATH`, for easier use — this isn't explicitly documented, but is the normal way to run a script like this.
 
-## Usage
+### Dependencies
 
-```
-metaudio [OPTIONS] <origin_directory>
-```
+The script checks for these automatically and tries to install anything missing:
 
-### Options
+- `openssl`
+- `ffmpeg`
+- `metaflac`
+- `exiftool`
 
-| Option | Description |
-|---|---|
-| `-m=<op1,op2,...>`, `--metadata-operation=<op1,op2,...>` | Comma-separated list of metadata operations to run. Conflicts with `-s`/`--structure-operation`. |
-| `-s=<op1,op2,...>`, `--structure-operation=<op1,op2,...>` | Comma-separated list of structure operations to run. Conflicts with `-m`/`--metadata-operation`. |
-| `-d <directory>`, `--destination <directory>` | Directory to send output files to. Defaults to move behavior unless `-c`/`--copy` is specified. The transport flag must be declared either before `-d` or after the destination path. |
-| `-m`, `--move` | Move files to the destination directory (default transport method when `-d` is used). |
-| `-c`, `--copy` | Copy files to the destination directory instead of moving them. |
-| `-y`, `--assume-yes` | Skip the confirmation prompt and proceed automatically. |
-| `-h`, `--help` | Show the help message. |
+You don't need to do anything — just make sure you have `apt`, `dnf`, or `pacman` available.
 
-Notes (from `docs/help.txt`):
+---
 
-- `--metadata-operation` and `--structure-operation` cannot be used together.
-- `<origin_directory>` can be declared at any position in the argument list.
-- If `--destination` is not declared, files are processed in place.
+## Quick Start
 
-### Examples
-
+**Fix metadata in a folder:**
 ```bash
-metaudio --metadata-operation=opt1,opt2 <origin_directory>
-metaudio <origin_directory> --structure-operation=opt1,opt2 --destination <destination_directory>
-metaudio -d <destination_directory> <origin_directory> -m=opt1,opt2
-metaudio <origin_directory> -s=opt1,opt2
+metaudio --metadata-operation=set_album_name /path/to/music
 ```
 
-Passing `help` as the value of `-m`/`--metadata-operation` or `-s`/`--structure-operation` prints the corresponding operation-specific help text and exits.
+**Reorganize folder structure, and copy the results elsewhere instead of moving them:**
+```bash
+metaudio /path/to/music --structure-operation=artist_base_structure --destination /path/to/output --copy
+```
 
-## Metadata Operations (`-m`/`--metadata-operation`)
+Before anything runs, metaudio shows you what it's about to do and asks:
+```
+Is info above correct? [Y/n]
+```
+Add `-y` to skip that and just go.
 
-| Operation | Description |
+---
+
+## Learn more
+
+| Topic | Where to look |
 |---|---|
-| `multiple_artists` | FLAC only. Splits a single `ARTIST` tag containing multiple artists (comma- or "feat."-separated) into a primary `ARTIST` entry plus separate `ARTISTS` entries for contributing artists, and sets the first artist as `ALBUMARTIST`. Intended for Navidrome compatibility. |
-| `set_album_name` | Sets the `ALBUM` tag using the existing `TITLE` tag value, on files where `ALBUM` is missing. Has no effect on files that already have `ALBUM` set. |
-| `trim_artwork` | Trims embedded cover art with a disproportionate aspect ratio down to 1:1 by center-cropping. Skips artwork that is already 1:1. |
-| `set_album_artist` | Surveys the `AlbumArtist` tag across all tracks in each album folder. If it's missing or present in a minority of tracks, falls back to `Artist`/`Artists` tags (splitting comma/"feat."-delimited values before counting; for FLAC files already processed by `multiple_artists`, existing `ARTISTS` tags are read directly). The most frequently occurring value is written as `AlbumArtist` on every track in the album. |
+| All command-line options (`-m`, `-s`, `-d`, `-c`, etc.) | [docs/options.md](docs/options.md) |
+| Metadata operations (fixing tags) | [docs/metadata-operations.md](docs/metadata-operations.md) |
+| Structure operations (reorganizing folders) | [docs/structure-operations.md](docs/structure-operations.md) |
 
-## Structure Operations (`-s`/`--structure-operation`)
-
-| Operation | Description |
-|---|---|
-| `track_positioner` | Reads the track number from each file's metadata and prepends it to the filename (e.g. `3 - Song Title.flac`). Skips files that are already numbered, and warns/skips files with no retrievable track number. |
-| `sort_album_type` | Prepends a type prefix to each album folder's name based on track count: `Single -` (1–2 tracks), `Extended Play -` (3–7 tracks), or `Full Length -` (8+ tracks). Skips folders already classified, and strips any pre-existing non-classification prefix (e.g. a leading year) first. |
-| `artist_base_structure` | Reads the `AlbumArtist` tag from the first track of each album folder and moves the album under an `Artist/Album` structure inside the origin directory. Skips albums whose first track has no `AlbumArtist` tag, and skips (with a warning) if the destination path already exists. |
-| `album_folder_sync` | Reads the Album tag from the first track of each album folder and renames the folder to match it (case-insensitively), preserving any sort_album_type classification prefix (Single/Extended Play/Full Length -) already present. Skips albums with no Album tag set, folders already matching, and cases where the target name already exists.|
-
-Both operation types accept `help` as the option value to print their dedicated help file (`docs/metadata_ops-help.txt` or `docs/structure_ops-help.txt`).
-
-## Confirmation Prompt
-
-Before executing (unless `-y`/`--assume-yes` is passed), the script prints the resolved `ORIGIN` (and `DESTINATION`/transport method, if set) and asks `Is info above correct? [Y/n]` before proceeding.
+You can also always run `metaudio -h` for help, or pass `help` as the value to `-m` or `-s` to see help for that specific operation type.
