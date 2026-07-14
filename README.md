@@ -33,7 +33,7 @@ You pick one type of operation, tell it which folder to work on, and it does the
 ```
 
 > [!note]
-> If you wish, you can symlink metaudio somewhere of you're `$PATH` for example:
+> If you wish, you can symlink MetAudio somewhere of you're `$PATH` for example:
 >
 > `$ > sudo ln -s /complete/path/to/metaudio_executable /usr/local/bin/`
 > 
