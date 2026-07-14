@@ -32,7 +32,12 @@ You pick one type of operation, tell it which folder to work on, and it does the
 ./metaudio [OPTIONS] <origin_directory>
 ```
 
-[Inference] You will likely want to run `chmod +x metaudio` first, or add it to your `PATH`, for easier use — this isn't explicitly documented, but is the normal way to run a script like this.
+> [!note]
+> If you wish, you can symlink metaudio somewhere of you're `$PATH` for example:
+>
+> `$ > sudo ln -s /complete/path/to/metaudio_executable /usr/local/bin/`
+> 
+> MetAudio will handle that. :^)
 
 ### Dependencies
 
