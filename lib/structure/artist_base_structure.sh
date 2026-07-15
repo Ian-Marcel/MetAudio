@@ -18,8 +18,15 @@ for TRACK in "${TRACKS[@]}"; do
 done
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-get_album_artist() { # args: <file>
-    exiftool -AlbumArtist -s3 "$1" 2>/dev/null
+get_album_artist() { # args: <file> <file-extension>
+    case "$2" in
+    'flac')
+        metaflac --show-tag=ALBUMARTIST "$1" | sed 's/^[^=]*=//' | sed '1q'
+        ;;
+    *)
+        exiftool -AlbumArtist -s3 "$1" 2>/dev/null
+        ;;
+    esac
 }
 
 sanitize_name() { # args: <name> — strips path separators and control characters
@@ -42,7 +49,7 @@ for ALBUM_PATH in "${FOLDERS[@]}"; do
         continue
     fi
 
-    ARTIST=$(get_album_artist "$FIRST_TRACK")
+    ARTIST=$(get_album_artist "$FIRST_TRACK" "${FIRST_TRACK##*.}")
 
     if [[ -z "$ARTIST" ]]; then
         echo "[WARN] $ALBUM_NAME — AlbumArtist tag is not set, skipping."
