@@ -98,7 +98,7 @@ while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
         if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
             ORIGIN="$ARG"
         else
-            echo -e "ERROR: $ARG is an additonal unrecognized argument was declared! \nSee audioxif --help for guidance."
+            echo -e "ERROR: $ARG is an additonal unrecognized! \nSee metaudio --help for guidance."
             exit 2
         fi
         ;;
