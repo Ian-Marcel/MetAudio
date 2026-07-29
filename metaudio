@@ -119,9 +119,14 @@ while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
 done
 # Logging configuration
 LOG_DSTN="$SHPWD/logs" # where the backup's logs will be stored
+LOG_DSTN_FALLBACK="$HOME/.metaudio_logs"
+if ! mkdir -p "$LOG_DSTN" 2>/dev/null; then
+    mkdir -p "$LOG_DSTN_FALLBACK"
+    LOG_DSTN="$LOG_DSTN_FALLBACK"
+fi
+
 ARCHV_NM=$(date %Y-%m-%dT%H:%M:%S)
 LOG_FILE="${LOG_DSTN}/${ARCHV_NM}.log"
-mkdir -p "$LOG_DSTN"
 case "$QUIET_LOGGING" in
 false)
     # Quiet mode: save to log file only (no live output)
