@@ -26,11 +26,20 @@ printf ' __  __      _                     _ _
 SHPWD=$(realpath "$0")
 SHPWD=$(dirname "$SHPWD")
 NO_PROMPTS='false'
+QUIET_LOGGING='false'
 ORIGIN='.'
 UNSAFE_FILE_CHARS_KILLER='[\/\\:*?"<>|]' # Identifica `chars` não aceitos em arquivos para que possam ser substituidos.
 EXTENSIONS="flac m4a"                    # No Futuro: mp3 ogg opus wma
 INDEX=0
 ARGS_DIGESTER=("$@")
+
+# Bash’s printf has a built-in method of getting the date which can be used in
+# place of the date command.
+date() {
+    # Usage: date "format"
+    # See: 'man strftime' for format.
+    printf "%($1)T\\n" "-1"
+}
 
 # Check depedencies
 source "$SHPWD/lib/check-dependencies.sh"
@@ -94,6 +103,9 @@ while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
         cat "$SHPWD/docs/help.txt"
         exit 0
         ;;
+    -q | --quiet)
+        QUIET_LOGGING='true'
+        ;;
     *)
         if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
             ORIGIN="$ARG"
@@ -105,6 +117,24 @@ while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
     esac
     INDEX=$((INDEX + 1))
 done
+# Logging configuration
+LOG_DSTN="$SHPWD/logs" # where the backup's logs will be stored
+ARCHV_NM=$(date %Y-%m-%dT%H:%M:%S)
+LOG_FILE="${LOG_DSTN}/${ARCHV_NM}.log"
+mkdir -p "$BKP_LOG_DSTN"
+case "$QUIET_LOGGING" in
+false)
+    # Quiet mode: save to log file only (no live output)
+    echo "Running in quiet mode (output saved to ${LOG_FILE})"
+    exec &>"${LOG_FILE}"
+    ;;
+true)
+    # Normal mode: show live output AND save to log file
+    echo "Running in normal mode (live output + saved to ${LOG_FILE})"
+    exec &> >(tee "${LOG_FILE}")
+    ;;
+esac
+# Check if any operation was declared
 if ! [ "${STRUCTURE_OPS:-}" -o "${METADATA_OPS:-}" ]; then
     echo "No operation declared!"
     exit 2
