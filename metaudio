@@ -128,12 +128,12 @@ fi
 ARCHV_NM=$(date %Y-%m-%dT%H:%M:%S)
 LOG_FILE="${LOG_DSTN}/${ARCHV_NM}.log"
 case "$QUIET_LOGGING" in
-false)
+true)
     # Quiet mode: save to log file only (no live output)
     echo "Running in quiet mode (output saved to ${LOG_FILE})"
     exec &>"${LOG_FILE}"
     ;;
-true)
+false)
     # Normal mode: show live output AND save to log file
     echo "Running in normal mode (live output + saved to ${LOG_FILE})"
     exec &> >(tee "${LOG_FILE}")
