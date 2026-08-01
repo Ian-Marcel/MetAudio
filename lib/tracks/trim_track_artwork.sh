@@ -20,7 +20,7 @@ for TRACK in "${TRACKS[@]}"; do
         case "$EXTENSION" in
         'flac')
             metaflac --remove --block-type=PICTURE "$@" &&
-                metaflac --import-picture-from="$TRACK_COVER_ART" "$@"
+                metaflac --import-picture-from="$TRACK_COVER_ART" "$@" || metaflac --import-picture-from="$TRACK_COVER_ART" "$@"
             ;;
         *)
             exiftool -overwrite_original "-CoverArt<=$TRACK_COVER_ART" "$@"
