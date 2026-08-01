@@ -3,6 +3,18 @@
 # Trim disproporcional artwork's/coverart's ratio
 # to match 1:1, which is the standart.
 
+upsert_cover_art() {
+    case "$EXTENSION" in
+    'flac')
+        metaflac --remove --block-type=PICTURE "$@" &&
+            metaflac --import-picture-from="$TRACK_COVER_ART" "$@"
+        ;;
+    *)
+        exiftool -overwrite_original "-CoverArt<=$TRACK_COVER_ART" "$@"
+        ;;
+    esac
+}
+
 echo "- TRIM TRACK ARTWORK/COVERART TO MATCH 1:1 RATIO  -------------------------"
 CURRENT_DIR="$PWD"
 WORK_DIR="/tmp/operation-$RANDOM$RANDOM$RANDOM"
@@ -16,24 +28,13 @@ for TRACK in "${TRACKS[@]}"; do
     TRACK_TITLE=$(exiftool -s3 -Title "$TRACK" 2>/dev/null)                                     # Pega o titulo da música.
     printf -v TRACK_COVER_ART "CoverArt - %s.jpg" "${TRACK_TITLE//$UNSAFE_FILE_CHARS_KILLER/_}" # Gera o nome do CoverArt da música baseado no titulo dela.
     echo "$TRACK_COVER_ART"
-    upsert_cover_art() {
-        case "$EXTENSION" in
-        'flac')
-            metaflac --remove --block-type=PICTURE "$@" &&
-                metaflac --import-picture-from="$TRACK_COVER_ART" "$@" || metaflac --import-picture-from="$TRACK_COVER_ART" "$@"
-            ;;
-        *)
-            exiftool -overwrite_original "-CoverArt<=$TRACK_COVER_ART" "$@"
-            ;;
-        esac
-    }
     printf "  [1/3] Title found: %s\n" "$TRACK_TITLE"
     printf "  [2/3] Extracting cover art -> original.%s\n" "$TRACK_COVER_ART"
-    if [ "$EXTENSION" == 'flac' ]; then
+    if [ "$EXTENSION" == 'flac' ] && [ -n "$(metaflac --list --block-type=PICTURE $TRACK)" ]; then
         metaflac --export-picture-to="./original.$TRACK_COVER_ART" "$TRACK"
-    elif [ -n "$(exiftool -CoverArt "$TRACK")" ]; then
+    elif [ -n "$(exiftool -CoverArt $TRACK)" ]; then
         exiftool -CoverArt -b "$TRACK" >./"original.$TRACK_COVER_ART"
-    elif [ -n "$(exiftool -Picture "$TRACK")" ]; then
+    elif [ -n "$(exiftool -Picture $TRACK)" ]; then
         exiftool -Picture -b "$TRACK" >./"original.$TRACK_COVER_ART"
     fi
     ART_DIMS=$(ffprobe -v error -select_streams v:0 \
