@@ -30,14 +30,15 @@ for TRACK in "${TRACKS[@]}"; do
     echo "$TRACK_COVER_ART"
     printf "  [1/3] Title found: %s\n" "$TRACK_TITLE"
     printf "  [2/3] Extracting cover art -> original.%s\n" "$TRACK_COVER_ART"
-    if [ "$EXTENSION" == 'flac' ] && [ -n "$(metaflac --list --block-type=PICTURE $TRACK)" ]; then
-        metaflac --export-picture-to="./original.$TRACK_COVER_ART" "$TRACK"
-    elif [ -n "$(exiftool -CoverArt $TRACK)" ]; then
+    if [ "$EXTENSION" == 'flac' ] && [ -n "$(metaflac --list --block-type=PICTURE "$TRACK")" ]; then
+        metaflac --export-picture-to=./original."$TRACK_COVER_ART" "$TRACK"
+    elif [ -n "$(exiftool -s3 -CoverArt $TRACK)" ]; then
         exiftool -CoverArt -b "$TRACK" >./"original.$TRACK_COVER_ART"
-    elif [ -n "$(exiftool -Picture $TRACK)" ]; then
+    elif [ -n "$(exiftool -s3 -Picture $TRACK)" ]; then
         exiftool -Picture -b "$TRACK" >./"original.$TRACK_COVER_ART"
     fi
-    ART_DIMS="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "original.$TRACK_COVER_ART" 2>/dev/null)"
+    ART_DIMS=$(ffprobe -v error -select_streams v:0 \
+        -show_entries stream=width,height -of csv=p=0 "original.$TRACK_COVER_ART" 2>/dev/null)
     ART_W="${ART_DIMS%%,*}"
     ART_H="${ART_DIMS##*,}"
     if [[ "$ART_W" -eq "$ART_H" ]]; then
