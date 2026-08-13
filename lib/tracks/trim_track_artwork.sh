@@ -37,8 +37,7 @@ for TRACK in "${TRACKS[@]}"; do
     elif [ -n "$(exiftool -Picture $TRACK)" ]; then
         exiftool -Picture -b "$TRACK" >./"original.$TRACK_COVER_ART"
     fi
-    ART_DIMS=$(ffprobe -v error -select_streams v:0 \
-        -show_entries stream=width,height -of csv=p=0 "original.$TRACK_COVER_ART" 2>/dev/null)
+    ART_DIMS="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "original.$TRACK_COVER_ART" 2>/dev/null)"
     ART_W="${ART_DIMS%%,*}"
     ART_H="${ART_DIMS##*,}"
     if [[ "$ART_W" -eq "$ART_H" ]]; then
