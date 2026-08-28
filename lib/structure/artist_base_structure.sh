@@ -42,7 +42,9 @@ for ALBUM_PATH in "${FOLDERS[@]}"; do
     ALBUM_NAME=$(basename "$ALBUM_PATH")
 
     FIRST_TRACK=$(find "$ALBUM_PATH" -maxdepth 1 \
-        \( -iname "*.flac" -o -iname "*.m4a" \) | sort | head -n1)
+        \( -iname "*.flac" -o -iname "*.m4a" \) -printf '%f\n' | sort -n | head -n1)
+
+    FIRST_TRACK="$ALBUM_PATH/$FIRST_TRACK"
 
     if [[ -z "$FIRST_TRACK" ]]; then
         echo "[WARN] $ALBUM_NAME — no audio files found at depth 1, skipping."
