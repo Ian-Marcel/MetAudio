@@ -107,7 +107,7 @@ while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
         QUIET_LOGGING='true'
         ;;
     *)
-        if [ -d "$ARG" -a "$ORIGIN" = '.' ]; then
+        if [ -d "$ARG" -a "$ORIGIN" == '.' ]; then
             ORIGIN="$ARG"
         else
             echo -e "ERROR: $ARG is an additonal unrecognized! \nSee metaudio --help for guidance."
@@ -244,10 +244,10 @@ elif [ "${METADATA_OPS:-}" ]; then
     done
 fi
 
-if [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" = 'move' ]; then
+if [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" == 'move' ]; then
     for ITEM in "$ORIGIN"/*; do
         dtmethod "$ITEM" "$DESTINATION_PATH"/
     done
-elif [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" = 'copy' ]; then
+elif [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" == 'copy' ]; then
     dtmethod "$ORIGIN"/* "$DESTINATION_PATH"/
 fi
