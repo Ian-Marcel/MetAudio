@@ -70,7 +70,7 @@ while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
         ;;
     -d | --destination)
         INDEX=$((INDEX + 1))
-        POST_DEST_DIGEST_INDEX=$INDEX # TODO: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
+        # POST_DEST_DIGEST_INDEX=$INDEX # TODO: Discover a way of enabling entering --copy and --move args between --destination and --destination's path
         ARG=${ARGS_DIGESTER[$INDEX]}
         if [ -d "$ARG" ]; then
             DESTINATION_PATH="$ARG"
@@ -107,7 +107,7 @@ while [ "${ARGS_DIGESTER[$INDEX]:-$NULLIFIER}" != "$NULLIFIER" ]; do
         QUIET_LOGGING='true'
         ;;
     *)
-        if [ -d "$ARG" -a "$ORIGIN" == '.' ]; then
+        if [ -d "$ARG" ] && [ "$ORIGIN" == '.' ]; then
             ORIGIN="$ARG"
         else
             echo -e "ERROR: $ARG is an additonal unrecognized! \nSee metaudio --help for guidance."
@@ -151,14 +151,46 @@ if [ "${DESTINATION_PATH:-}" ]; then
     echo "DESTINATION transport method is: $DESTINATION_TRANSPORT_METHOD"
     case "$DESTINATION_TRANSPORT_METHOD" in
     move)
-        dtmethod() {
-            cp -ar "$1" "$2" &&
-                rm -rf "$1"
+        detran_method() {
+            local ORIGIN="$1"
+            local DESTINY="$2"
+            local TRACKS=()
+
+            for EXTENSION in $EXTENSIONS; do
+                mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$ORIGIN" -iname "*.$EXTENSION" | sort)
+            done
+            for i in "${TRACKS[@]}"; do
+                track_base_folder=${i/$ORIGIN\//}
+                track_base_folder=$(cut -d'/' -f1 <<<"$track_base_folder")
+                new_TRACKS_list+=("$ORIGIN/$track_base_folder")
+            done
+
+            for i in "${new_TRACKS_list[@]}"; do
+                echo "$i moved to $DESTINY"
+                cp -ar "$i" "$2/" &&
+                    rm -rf "$i"
+            done
         }
         ;;
     copy)
-        dtmethod() {
-            cp -ar "$@"
+        detran_method() {
+            local ORIGIN="$1"
+            local DESTINY="$2"
+            local TRACKS=()
+
+            for EXTENSION in $EXTENSIONS; do
+                mapfile -t -O "${#TRACKS[@]}" TRACKS < <(find "$ORIGIN" -iname "*.$EXTENSION" | sort)
+            done
+            for i in "${TRACKS[@]}"; do
+                track_base_folder=${i/$ORIGIN\//}
+                track_base_folder=$(cut -d'/' -f1 <<<"$track_base_folder")
+                new_TRACKS_list+=("$ORIGIN/$track_base_folder")
+            done
+
+            for i in "${new_TRACKS_list[@]}"; do
+                echo "$i copied to $DESTINY"
+                cp -ar "$i" "$2/"
+            done
         }
         ;;
     esac
@@ -244,10 +276,8 @@ elif [ "${METADATA_OPS:-}" ]; then
     done
 fi
 
-if [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" == 'move' ]; then
-    for ITEM in "$ORIGIN"/*; do
-        dtmethod "$ITEM" "$DESTINATION_PATH"/
-    done
-elif [ "${DESTINATION_PATH:-}" -a "${DESTINATION_TRANSPORT_METHOD:-}" == 'copy' ]; then
-    dtmethod "$ORIGIN"/* "$DESTINATION_PATH"/
+if [ "${DESTINATION_PATH:-}" ] && [ "${DESTINATION_TRANSPORT_METHOD:-}" == 'move' ]; then
+    detran_method "$ORIGIN" "$DESTINATION_PATH"
+elif [ "${DESTINATION_PATH:-}" ] && [ "${DESTINATION_TRANSPORT_METHOD:-}" == 'copy' ]; then
+    detran_method "$ORIGIN" "$DESTINATION_PATH"
 fi
